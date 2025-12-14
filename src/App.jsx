@@ -538,34 +538,59 @@ const COMPLETED_STUDENTS = [
 
 // --- COMPONENTES UI REUTILIZÁVEIS ---
 
-const Card = ({ children, className = "" }) => (
-  <div
-    className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}
-  >
-    {children}
-  </div>
-);
+const Card = ({
+  children,
+  className = "",
+  elevated = false,
+  hover = false,
+}) => {
+  const baseClasses =
+    "bg-white rounded-gov border border-gray-200 overflow-hidden";
+  const elevationClasses = elevated ? "shadow-gov-lg" : "shadow-gov-sm";
+  const hoverClasses = hover
+    ? "transition-shadow duration-200 hover:shadow-gov-md hover:border-gov-blue/30"
+    : "";
+
+  return (
+    <div
+      className={`${baseClasses} ${elevationClasses} ${hoverClasses} ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 const Badge = ({ status }) => {
   const styles = {
-    Abertas: "bg-green-100 text-green-800",
-    Aprovado: "bg-green-100 text-green-800",
-    Deferido: "bg-green-100 text-green-800",
-    "Em Execução": "bg-blue-100 text-blue-800",
-    Pendente: "bg-yellow-100 text-yellow-800",
-    "Aguardando Aprovação": "bg-yellow-100 text-yellow-800",
-    Rascunho: "bg-gray-100 text-gray-800",
-    Encerrada: "bg-red-100 text-red-800",
-    Indeferido: "bg-red-100 text-red-800",
-    Curso: "bg-purple-100 text-purple-800",
-    Evento: "bg-indigo-100 text-indigo-800",
-    Oficina: "bg-pink-100 text-pink-800",
+    // Status
+    Abertas:
+      "bg-feedback-success/10 text-feedback-success border-feedback-success/20",
+    Aprovado:
+      "bg-feedback-success/10 text-feedback-success border-feedback-success/20",
+    Deferido:
+      "bg-feedback-success/10 text-feedback-success border-feedback-success/20",
+    "Em Execução":
+      "bg-feedback-info/10 text-feedback-info border-feedback-info/20",
+    Pendente:
+      "bg-feedback-warning/10 text-yellow-700 border-feedback-warning/30",
+    "Aguardando Aprovação":
+      "bg-feedback-warning/10 text-yellow-700 border-feedback-warning/30",
+    Rascunho: "bg-gray-100 text-gray-700 border-gray-200",
+    Encerrada:
+      "bg-feedback-error/10 text-feedback-error border-feedback-error/20",
+    Indeferido:
+      "bg-feedback-error/10 text-feedback-error border-feedback-error/20",
+    // Types
+    Curso: "bg-purple-50 text-purple-700 border-purple-200",
+    Evento: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    Oficina: "bg-pink-50 text-pink-700 border-pink-200",
+    Projeto: "bg-cyan-50 text-cyan-700 border-cyan-200",
   };
   return (
     <span
-      className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-        styles[status] || "bg-gray-100"
-      } border border-black/5`}
+      className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+        styles[status] || "bg-gray-100 text-gray-700 border-gray-200"
+      }`}
     >
       {status}
     </span>
@@ -581,22 +606,28 @@ const Button = ({
   disabled,
 }) => {
   const base =
-    "flex items-center justify-center px-4 py-2 rounded-md transition-all font-medium focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center px-6 py-3 rounded-gov transition-all font-semibold focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed min-h-[44px]";
+
   const variants = {
-    primary: "bg-red-800 hover:bg-red-900 text-white focus:ring-red-500",
-    secondary: "bg-blue-900 hover:bg-blue-800 text-white focus:ring-blue-500",
-    outline: "border border-gray-300 text-gray-700 hover:bg-gray-50",
-    danger: "bg-red-50 text-red-700 hover:bg-red-100 border border-red-200",
-    ghost: "text-gray-600 hover:bg-gray-100",
+    primary:
+      "bg-gov-blue hover:bg-gov-blue-dark text-white focus:ring-blue-300 shadow-gov-sm hover:translate-y-[-1px]",
+    secondary:
+      "bg-transparent border-2 border-gov-blue text-gov-blue hover:bg-blue-50 focus:ring-blue-300",
+    outline:
+      "border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-200",
+    danger: "bg-feedback-error hover:bg-red-700 text-white focus:ring-red-200",
+    ghost: "text-gov-blue hover:bg-blue-50 bg-transparent",
+    white: "bg-white text-gov-blue hover:bg-gray-50 border border-gray-200",
   };
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={`${base} ${variants[variant]} ${className}`}
     >
-      {Icon && <Icon size={16} className="mr-2" />}
-      {children}
+      {Icon && <Icon size={20} className="mr-2 flex-shrink-0" />}
+      <span>{children}</span>
     </button>
   );
 };
@@ -609,21 +640,31 @@ const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
     lg: "max-w-4xl",
     xl: "max-w-6xl",
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
+      {/* Focus Trap Mock */}
       <div
-        className={`bg-white rounded-xl shadow-2xl w-full ${sizes[size]} max-h-[90vh] overflow-y-auto`}
+        className={`bg-white rounded-gov-lg shadow-gov-xl w-full ${sizes[size]} max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
-        <div className="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10">
-          <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+        <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <h3 id="modal-title" className="text-xl font-bold text-gray-900">
+            {title}
+          </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="p-2 text-gray-400 hover:text-gov-blue hover:bg-blue-50 rounded-full transition-colors"
+            aria-label="Fechar"
           >
-            <X />
+            <X size={24} />
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -637,18 +678,44 @@ const Input = ({
   onChange,
   className = "",
   required,
+  error,
+  helper,
 }) => (
   <div className={`mb-4 ${className}`}>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
+    {label && (
+      <label className="block text-sm font-semibold text-gray-800 mb-2">
+        {label}
+        {required && <span className="text-[#E52207] ml-1">*</span>}
+      </label>
+    )}
+
     <input
       type={type}
-      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+      className={`
+        w-full px-4 py-3 
+        border-2 rounded-gov
+        text-gray-800 text-base
+        transition-all duration-200
+        outline-none
+        ${
+          error
+            ? "border-feedback-error bg-red-50 focus:ring-4 focus:ring-red-200"
+            : "border-gray-300 bg-white focus:border-gov-blue focus:ring-4 focus:ring-blue-100"
+        }
+        disabled:bg-gray-100 disabled:cursor-not-allowed
+      `}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      aria-invalid={!!error}
     />
+    {helper && !error && <p className="text-xs text-gray-500 mt-1">{helper}</p>}
+    {error && (
+      <p className="text-xs text-feedback-error mt-1 flex items-center gap-1">
+        <AlertTriangle size={12} />
+        {error}
+      </p>
+    )}
   </div>
 );
 
@@ -1866,6 +1933,7 @@ const CertificationModal = ({ opportunity, user, onClose }) => {
 };
 
 // 7. LANDING PAGE ATUALIZADA (RF0003, RF045, RF027)
+// 7. LANDING PAGE ATUALIZADA (RF0003, RF045, RF027)
 const LandingPage = ({ onLogin, onRegister }) => {
   const [certCode, setCertCode] = useState("");
   const [validationResult, setValidationResult] = useState(null);
@@ -1880,63 +1948,103 @@ const LandingPage = ({ onLogin, onRegister }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-800 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-              U
-            </div>
+      {/* Barra Gov.br */}
+      <div className="bg-[#071D41] text-white py-1">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-xs font-semibold">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-wider">Brasil</span>
+          </div>
+          <div className="flex gap-4">
+            <a href="#" className="hover:underline opacity-80">
+              Acesso à informação
+            </a>
+            <a href="#" className="hover:underline opacity-80">
+              Participação Social
+            </a>
+            <a href="#" className="hover:underline opacity-80">
+              Legislação
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Header UFMA */}
+      <header className="bg-gov-blue text-white shadow-md sticky top-0 z-40 h-20">
+        <div className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <img
+              src="/src/assets/PNG - Logo UFMA colorido.png"
+              alt="Logo UFMA"
+              className="h-12 w-auto object-contain"
+            />
             <div>
-              <h1 className="text-xl font-bold text-gray-900 leading-tight">
-                {import.meta.env.VITE_APP_TITLE}
+              <h1 className="text-lg font-bold leading-tight">
+                Sistema de Extensão
               </h1>
-              <p className="text-xs text-gray-500">Ciência da Computação</p>
+              <p className="text-xs text-blue-100 opacity-90">
+                Universidade Federal do Maranhão
+              </p>
             </div>
           </div>
-          <div className="flex gap-3">
-            <a
-              href="#mural"
-              className="hidden md:block text-gray-600 hover:text-red-800 font-medium px-3 py-2"
+          <nav className="hidden md:flex items-center gap-8">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("mural")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="text-sm font-semibold hover:text-accent-gold transition-colors"
             >
               Oportunidades
-            </a>
-            <a
-              href="#validar"
-              className="hidden md:block text-gray-600 hover:text-red-800 font-medium px-3 py-2"
+            </button>
+            <button
+              onClick={() =>
+                document
+                  .getElementById("validar")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="text-sm font-semibold hover:text-accent-gold transition-colors"
             >
               Validar Certificado
-            </a>
-            <Button variant="ghost" onClick={onRegister}>
-              Criar Conta
-            </Button>
-            <Button variant="primary" onClick={onLogin}>
+            </button>
+            <button
+              onClick={onLogin}
+              className="bg-white text-gov-blue px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors shadow-sm"
+            >
               Acesso Restrito
-            </Button>
-          </div>
+            </button>
+          </nav>
         </div>
       </header>
 
-      {/* Hero */}
-      <div className="bg-blue-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
-        <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-5xl font-bold mb-6 tracking-tight">
-            Extensão Universitária Simplificada
+      {/* Hero Section */}
+      <div className="bg-gov-blue-dark relative overflow-hidden text-white py-24">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-accent-gold rounded-full blur-[128px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-[100px] opacity-10 -translate-x-1/2 translate-y-1/2"></div>
+
+        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+          <div className="inline-block mb-4">
+            <span className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide">
+              Portal Oficial
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            Conectando a Universidade <br />
+            <span className="text-accent-gold">à Sociedade</span>
           </h2>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-10">
+          <p className="text-lg text-blue-100 max-w-2xl mx-auto mb-10">
             A plataforma oficial para gerenciar carga horária, emitir
             certificados e conectar a UFMA à sociedade.
           </p>
           <div className="flex justify-center gap-4">
-            <Button
+            <button
               onClick={onRegister}
-              className="bg-red-600 hover:bg-red-700 text-lg px-8 py-4 h-auto"
+              className="px-8 py-4 bg-yellow-400 text-blue-900 rounded-gov font-bold text-lg shadow-lg hover:shadow-xl transition-all"
             >
               Sou Aluno (Começar)
-            </Button>
-            <Button
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 text-lg px-8 py-4 h-auto"
+            </button>
+            <button
+              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/30 rounded-gov font-bold text-lg backdrop-blur-sm transition-all"
               onClick={() =>
                 document
                   .getElementById("validar")
@@ -1944,7 +2052,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
               }
             >
               Validar Certificado
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -4271,7 +4379,11 @@ const App = () => {
         <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full animate-in zoom-in">
           <div className="text-center mb-8">
             <div className="w-12 h-12 bg-red-800 rounded-lg flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-              U
+              <img
+                src="/src/assets/PNG - Logo UFMA colorido.png"
+                alt="Logo UFMA"
+                className="h-12 w-auto object-contain"
+              />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">
               Acesso ao Sistema
