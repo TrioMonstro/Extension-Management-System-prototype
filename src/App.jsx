@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   User,
   BookOpen,
@@ -4195,8 +4195,8 @@ const App = () => {
                 variant={currentView === "dashboard" ? "secondary" : "ghost"}
                 className={`w-full justify-start ${
                   currentView === "dashboard"
-                    ? "bg-blue-800 text-white"
-                    : "text-blue-100 hover:bg-blue-800"
+                    ? "bg-blue-800 text-white sidebar-active"
+                    : "text-white/90 hover:bg-blue-800 hover:text-white"
                 }`}
                 icon={BarChart2}
                 onClick={() => setSubView("dashboard")}
@@ -4211,8 +4211,8 @@ const App = () => {
                     }
                     className={`w-full justify-start ${
                       currentView === "opportunities"
-                        ? "bg-blue-800 text-white"
-                        : "text-blue-100 hover:bg-blue-800"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
                     }`}
                     icon={Search}
                     onClick={() => setSubView("opportunities")}
@@ -4223,8 +4223,8 @@ const App = () => {
                     variant={currentView === "requests" ? "secondary" : "ghost"}
                     className={`w-full justify-start ${
                       currentView === "requests"
-                        ? "bg-blue-800 text-white"
-                        : "text-blue-100 hover:bg-blue-800"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
                     }`}
                     icon={FileText}
                     onClick={() => setSubView("requests")}
@@ -4235,8 +4235,8 @@ const App = () => {
                     variant={currentView === "gallery" ? "secondary" : "ghost"}
                     className={`w-full justify-start ${
                       currentView === "gallery"
-                        ? "bg-blue-800 text-white"
-                        : "text-blue-100 hover:bg-blue-800"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
                     }`}
                     icon={Award}
                     onClick={() => setSubView("gallery")}
@@ -4254,8 +4254,8 @@ const App = () => {
                       }
                       className={`w-full justify-start ${
                         currentView === "validation"
-                          ? "bg-blue-800 text-white"
-                          : "text-blue-100 hover:bg-blue-800"
+                          ? "bg-blue-800 text-white sidebar-active"
+                          : "text-white/90 hover:bg-blue-800 hover:text-white"
                       }`}
                       icon={CheckCircle}
                       onClick={() => setSubView("validation")}
@@ -4270,8 +4270,8 @@ const App = () => {
                       }
                       className={`w-full justify-start ${
                         currentView === "conclusion"
-                          ? "bg-blue-800 text-white"
-                          : "text-blue-100 hover:bg-blue-800"
+                          ? "bg-blue-800 text-white sidebar-active"
+                          : "text-white/90 hover:bg-blue-800 hover:text-white"
                       }`}
                       icon={Award}
                       onClick={() => setSubView("conclusion")}
