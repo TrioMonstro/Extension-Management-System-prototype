@@ -300,6 +300,7 @@ const REQUESTS = [
     id: 501,
     student: "Talyson Renan",
     matricula: "2021003456",
+    studentPeriod: "6º",
     type: "Externo",
     activity: "Curso Udemy - React Avançado",
     ch_requested: 20,
@@ -307,6 +308,9 @@ const REQUESTS = [
     status: "Pendente",
     document: "cert_udemy.pdf",
     description: "Curso de 20h sobre hooks e context API.",
+    priority: "high",
+    daysRemaining: 2,
+    documentPreview: "https://via.placeholder.com/50",
     timeline: [
       { event: "Enviado", date: "12/12/2024 14:30", user: "Talyson Renan" },
     ],
@@ -315,6 +319,7 @@ const REQUESTS = [
     id: 502,
     student: "Maria Silva",
     matricula: "2021009988",
+    studentPeriod: "7º",
     type: "Externo",
     activity: "Bootcamp Rocketseat",
     ch_requested: 40,
@@ -322,18 +327,23 @@ const REQUESTS = [
     status: "Aprovado",
     document: "cert_rocket.pdf",
     description: "Bootcamp intensivo.",
+    priority: "normal",
+    daysRemaining: 0,
     timeline: [],
   },
   {
     id: 503,
     student: "João Souza",
     matricula: "2021007788",
+    studentPeriod: "5º",
     type: "Externo",
     activity: "Palestra Tech",
     ch_requested: 5,
     date: "08/12/2024",
     status: "Indeferido",
     reason: "Documento ilegível",
+    priority: "normal",
+    daysRemaining: 0,
     timeline: [
       { event: "Enviado", date: "08/12/2024 10:00", user: "João Souza" },
       {
@@ -346,11 +356,15 @@ const REQUESTS = [
   {
     id: 504,
     student: "Talyson Renan",
+    matricula: "2021003456",
+    studentPeriod: "6º",
     activity: "Curso de React Avançado (Udemy)",
     type: "Curso",
     ch_requested: 20,
     date: "12/12/2024",
     status: "Pendente",
+    priority: "critical",
+    daysRemaining: 1,
     timeline: [
       { event: "Enviado", date: "12/12/2024 14:30", user: "Talyson Renan" },
     ],
@@ -358,43 +372,127 @@ const REQUESTS = [
   {
     id: 505,
     student: "Talyson Renan",
+    matricula: "2021003456",
+    studentPeriod: "6º",
     activity: "Monitoria de Algoritmos",
     type: "Projeto",
     ch_requested: 60,
     date: "10/10/2024",
     status: "Aprovado",
-    timeline: [
-      { event: "Enviado", date: "10/10/2024 08:00", user: "Talyson Renan" },
-      {
-        event: "Em Análise",
-        date: "11/10/2024 09:00",
-        user: "Prof. Alexandre Cesar",
-      },
-      {
-        event: "Deferido",
-        date: "15/10/2024 14:00",
-        user: "Prof. Alexandre Cesar",
-      },
-    ],
+    priority: "normal",
+    daysRemaining: 0,
+    timeline: [],
   },
   {
     id: 506,
     student: "Talyson Renan",
+    matricula: "2021003456",
+    studentPeriod: "6º",
     activity: "Workshop de Design Thinking",
     type: "Oficina",
     ch_requested: 4,
     date: "05/12/2024",
     status: "Indeferido",
-    reason: "Documento ilegível. Por favor, reenvie uma cópia escaneada.",
+    reason: "Documento ilegível.",
+    priority: "normal",
+    daysRemaining: 0,
+    timeline: [],
+  },
+  {
+    id: 507,
+    student: "Ana Beatriz",
+    matricula: "2022001122",
+    studentPeriod: "4º",
+    type: "Externo",
+    activity: "Estágio Supervisionado",
+    ch_requested: 100,
+    date: "01/12/2024",
+    status: "Pendente",
+    priority: "normal",
+    daysRemaining: 5,
+    description: "Estágio de férias na empresa TechSoft.",
     timeline: [
-      { event: "Enviado", date: "05/12/2024 10:00", user: "Talyson Renan" },
+      { event: "Enviado", date: "01/12/2024 09:00", user: "Ana Beatriz" },
+    ],
+  },
+  {
+    id: 508,
+    student: "Pedro Henrique",
+    matricula: "2020005544",
+    studentPeriod: "8º",
+    type: "Externo",
+    activity: "Curso de Inglês Técnico",
+    ch_requested: 30,
+    date: "30/11/2024",
+    status: "Pendente",
+    priority: "normal",
+    daysRemaining: 8,
+    description: "Curso de inglês focado em TI.",
+    timeline: [
+      { event: "Enviado", date: "30/11/2024 14:00", user: "Pedro Henrique" },
+    ],
+  },
+];
+
+const COMMISSION_MEMBERS = [
+  { id: 1, name: "Prof. Maria Santos", department: "DEINF" },
+  { id: 2, name: "Prof. Carlos Oliveira", department: "DEINF" },
+  { id: 3, name: "Profa. Ana Paula", department: "DEELE" },
+];
+
+const COMPLETED_STUDENTS = [
+  {
+    id: 1,
+    name: "Lucas Farias",
+    matricula: "2020001234",
+    ingresso: "2020.1",
+    ppc: "2020",
+    totalHours: 345,
+    completedAt: "15/11/2024",
+    status: "Apto",
+    launched: false,
+    activities: [
       {
-        event: "Indeferido",
-        date: "08/12/2024 16:00",
-        user: "Prof. Alexandre Cesar",
+        name: "Robótica Educacional",
+        type: "Interna",
+        ch: 40,
+        date: "20/10/2024",
+        validator: "Prof. Alexandre",
+      },
+      {
+        name: "Curso Python Udemy",
+        type: "Externa",
+        ch: 60,
+        date: "15/09/2024",
+        validator: "Prof. Alexandre",
       },
     ],
   },
+  {
+    id: 2,
+    name: "Mariana Costa",
+    matricula: "2020005678",
+    ingresso: "2020.1",
+    ppc: "2020",
+    totalHours: 350,
+    completedAt: "10/11/2024",
+    status: "Apto",
+    launched: false,
+    activities: [],
+  },
+  // Mocking more students to reach ~20
+  ...Array.from({ length: 18 }).map((_, i) => ({
+    id: i + 3,
+    name: `Aluno Mock ${i + 3}`,
+    matricula: `202000${1000 + i}`,
+    ingresso: "2020.1",
+    ppc: "2020",
+    totalHours: 345 + i,
+    completedAt: "01/12/2024",
+    status: "Apto",
+    launched: false,
+    activities: [],
+  })),
 ];
 
 // --- COMPONENTES UI REUTILIZÁVEIS ---
@@ -2722,8 +2820,443 @@ const App = () => {
     </div>
   );
 
+  // --- 10. VALIDAÇÃO DASHBOARD (COORD UCE) - RF021 ---
+
+  const DelegationModal = ({ request, onClose }) => {
+    const [member, setMember] = useState("");
+    const [notes, setNotes] = useState("");
+
+    const handleDelegate = () => {
+      alert(`Solicitação delegada para ${member}!`);
+      onClose();
+    };
+
+    return (
+      <Modal
+        isOpen={true}
+        onClose={onClose}
+        title={`Delegar Solicitação #${request.id}`}
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 mb-4">
+            Selecione um membro da comissão para analisar esta solicitação.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Membro da Comissão
+            </label>
+            <select
+              className="w-full border p-2 rounded"
+              value={member}
+              onChange={(e) => setMember(e.target.value)}
+            >
+              <option value="">Selecione...</option>
+              {COMMISSION_MEMBERS.map((m) => (
+                <option key={m.id} value={m.name}>
+                  {m.name} ({m.department})
+                </option>
+              ))}
+            </select>
+          </div>
+          <textarea
+            className="w-full border p-2 rounded"
+            rows="3"
+            placeholder="Observações para o avaliador (opcional)..."
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+          <div className="flex gap-2">
+            <input type="checkbox" id="email" defaultChecked />
+            <label htmlFor="email" className="text-sm">
+              Enviar notificação urgente por e-mail
+            </label>
+          </div>
+          <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
+            <Button variant="outline" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button onClick={handleDelegate} disabled={!member}>
+              Confirmar Delegação
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  const ValidationPage = ({ onAnalyze }) => {
+    const [tab, setTab] = useState("Pendentes");
+    const [delegatingReq, setDelegatingReq] = useState(null);
+
+    const pendingCount = REQUESTS.filter((r) => r.status === "Pendente").length;
+    const criticalCount = REQUESTS.filter(
+      (r) => r.status === "Pendente" && r.daysRemaining <= 2
+    ).length;
+
+    const getFilteredRequests = () => {
+      if (tab === "Pendentes")
+        return REQUESTS.filter((r) => r.status === "Pendente");
+      if (tab === "Concluídas")
+        return REQUESTS.filter((r) => r.status !== "Pendente");
+      return REQUESTS;
+    };
+
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        {/* Header Stats */}
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-yellow-50 p-4 rounded-xl border-l-4 border-yellow-500">
+            <p className="text-xs text-yellow-800 font-bold uppercase">
+              Pendentes de Análise
+            </p>
+            <p className="text-3xl font-bold text-yellow-900">{pendingCount}</p>
+          </div>
+          <div className="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
+            <div className="flex justify-between">
+              <p className="text-xs text-red-800 font-bold uppercase">
+                Prazos Críticos
+              </p>
+              <AlertTriangle size={16} className="text-red-600" />
+            </div>
+            <p className="text-3xl font-bold text-red-900">{criticalCount}</p>
+          </div>
+          <div className="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
+            <p className="text-xs text-green-800 font-bold uppercase">
+              Analisadas Hoje
+            </p>
+            <p className="text-3xl font-bold text-green-900">12</p>
+          </div>
+          <div className="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
+            <p className="text-xs text-blue-800 font-bold uppercase">
+              Taxa de Deferimento
+            </p>
+            <p className="text-3xl font-bold text-blue-900">85%</p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[500px]">
+          {/* Tabs & Toolbar */}
+          <div className="border-b px-6 py-4 flex flex-col md:flex-row justify-between gap-4">
+            <div className="flex gap-4">
+              {["Pendentes", "Concluídas", "Todas"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`pb-2 font-medium text-sm transition-colors ${
+                    tab === t
+                      ? "border-b-2 border-blue-600 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <div className="relative">
+                <Search
+                  size={16}
+                  className="absolute left-3 top-3 text-gray-400"
+                />
+                <input
+                  className="pl-9 pr-4 py-2 border rounded-lg text-sm w-64"
+                  placeholder="Buscar por aluno ou atividade..."
+                />
+              </div>
+              <Button variant="outline" icon={Filter}>
+                Filtros
+              </Button>
+              <Button variant="outline" icon={Download} />
+            </div>
+          </div>
+
+          {/* Request List */}
+          <div className="divide-y">
+            {getFilteredRequests().map((req) => (
+              <div
+                key={req.id}
+                className="p-6 hover:bg-gray-50 transition-colors flex flex-col md:flex-row gap-6"
+              >
+                {/* Left: Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge status={req.status} />
+                    {req.priority === "critical" && (
+                      <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded font-bold">
+                        URGENTE
+                      </span>
+                    )}
+                    {req.priority === "high" && (
+                      <span className="text-xs bg-orange-500 text-white px-2 py-0.5 rounded font-bold">
+                        ALTA
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-bold text-lg text-gray-900">
+                    {req.activity}
+                  </h3>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                    <User size={14} />{" "}
+                    <span>
+                      {req.student} ({req.matricula} - {req.studentPeriod})
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                    <FileText size={14} />{" "}
+                    <span>
+                      {req.type} • {req.ch_requested}h solicitadas
+                    </span>
+                  </div>
+                </div>
+
+                {/* Center: Metadata */}
+                <div className="flex-1 border-l pl-6 hidden md:block">
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                    {req.description}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Enviado em: {req.date}
+                  </p>
+                  <p className="text-sm text-blue-600 flex items-center gap-1 mt-2 cursor-pointer hover:underline">
+                    <Eye size={14} /> Visualizar Documento
+                  </p>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="w-48 flex flex-col gap-2 items-end justify-center">
+                  {req.status === "Pendente" && (
+                    <>
+                      <div
+                        className={`text-xs font-bold flex items-center gap-1 mb-2 ${
+                          req.daysRemaining <= 2
+                            ? "text-red-600"
+                            : req.daysRemaining <= 5
+                            ? "text-yellow-600"
+                            : "text-green-600"
+                        }`}
+                      >
+                        <Clock size={14} /> Vence em {req.daysRemaining} dias
+                      </div>
+                      <Button className="w-full" onClick={() => onAnalyze(req)}>
+                        Analisar Agora
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setDelegatingReq(req)}
+                      >
+                        Delegar
+                      </Button>
+                    </>
+                  )}
+                  {req.status !== "Pendente" && (
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-gray-900">
+                        Analisado em
+                      </p>
+                      <p className="text-sm text-gray-500">15/12/2024</p>
+                      <Button variant="ghost" className="mt-2" size="sm">
+                        Ver Parecer
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {delegatingReq && (
+          <DelegationModal
+            request={delegatingReq}
+            onClose={() => setDelegatingReq(null)}
+          />
+        )}
+      </div>
+    );
+  };
+
+  // --- 11. RELATÓRIOS DE CONCLUSÃO (COORD CURSO) - RF0005 ---
+
+  const ConclusionReportPage = () => {
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const toggleSelect = (id) => {
+      setSelectedStudents((prev) =>
+        prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      );
+    };
+
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        <div className="flex justify-between items-end">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Relatórios de Conclusão - UCE
+            </h2>
+            <p className="text-gray-500">
+              Alunos aptos para lançamento de carga horária no SIGAA.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" icon={FileText}>
+              Gerar PDF
+            </Button>
+            <Button
+              onClick={() => setShowConfirm(true)}
+              disabled={selectedStudents.length === 0}
+              className={
+                selectedStudents.length > 0
+                  ? "bg-green-600 hover:bg-green-700"
+                  : ""
+              }
+              icon={CheckCircle}
+            >
+              Exportar p/ SIGAA ({selectedStudents.length})
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          <Card className="p-4 bg-white">
+            <p className="text-gray-500 text-xs uppercase font-bold">
+              Total de Concluintes
+            </p>
+            <p className="text-2xl font-bold">24</p>
+          </Card>
+          <Card className="p-4 bg-white">
+            <p className="text-gray-500 text-xs uppercase font-bold">
+              Taxa de Conclusão
+            </p>
+            <p className="text-2xl font-bold">18%</p>
+          </Card>
+          <Card className="p-4 bg-white">
+            <p className="text-gray-500 text-xs uppercase font-bold">
+              Média de Horas
+            </p>
+            <p className="text-2xl font-bold">348h</p>
+          </Card>
+          <Card className="p-4 bg-white">
+            <p className="text-gray-500 text-xs uppercase font-bold">
+              Tempo Médio
+            </p>
+            <p className="text-2xl font-bold">8 Semestres</p>
+          </Card>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="p-4 border-b bg-gray-50 flex justify-between">
+            <div className="flex gap-4">
+              <select className="border rounded p-1 text-sm">
+                <option>Semestre 2024.2</option>
+              </select>
+              <select className="border rounded p-1 text-sm">
+                <option>PPC 2022</option>
+              </select>
+            </div>
+            <input
+              placeholder="Buscar aluno..."
+              className="border rounded px-3 py-1 text-sm w-64"
+            />
+          </div>
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
+              <tr>
+                <th className="p-4 w-4">
+                  <input type="checkbox" />
+                </th>
+                <th className="p-4">Matrícula</th>
+                <th className="p-4">Nome Completo</th>
+                <th className="p-4">Ingresso</th>
+                <th className="p-4 text-center">Total Horas</th>
+                <th className="p-4">Conclusão</th>
+                <th className="p-4 text-center">Status</th>
+                <th className="p-4 text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {COMPLETED_STUDENTS.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="p-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedStudents.includes(student.id)}
+                      onChange={() => toggleSelect(student.id)}
+                    />
+                  </td>
+                  <td className="p-4 font-mono text-gray-600">
+                    {student.matricula}
+                  </td>
+                  <td className="p-4 font-medium text-gray-900">
+                    {student.name}
+                  </td>
+                  <td className="p-4 text-gray-500">{student.ingresso}</td>
+                  <td className="p-4 text-center font-bold text-green-700">
+                    {student.totalHours}h
+                  </td>
+                  <td className="p-4 text-gray-500">{student.completedAt}</td>
+                  <td className="p-4 text-center">
+                    <Badge status="Aprovado" />
+                  </td>
+                  <td className="p-4 text-right">
+                    <Button variant="ghost" size="sm">
+                      Detalhes
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {showConfirm && (
+          <Modal
+            isOpen={true}
+            onClose={() => setShowConfirm(false)}
+            title="Confirmar Lançamento no SIGAA"
+            size="md"
+          >
+            <div className="space-y-4">
+              <div className="bg-yellow-50 p-4 rounded text-sm text-yellow-800 border-l-4 border-yellow-400">
+                Atenção: Esta ação registrará o aproveitamento de carga horária
+                para <strong>{selectedStudents.length} alunos</strong> no SIGAA.
+                Esta ação é irreversível.
+              </div>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" /> Verifiquei que todos concluíram
+                  345h.
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" /> Confirmo que os dados estão
+                  corretos.
+                </label>
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button variant="outline" onClick={() => setShowConfirm(false)}>
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    alert("Lançamento realizado com sucesso!");
+                    setShowConfirm(false);
+                  }}
+                >
+                  Confirmar Lançamento
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        )}
+      </div>
+    );
+  };
+
   // Coord UCE View (Alexandre) - Foco em Análise
-  const CoordUCEView = () => (
+  const CoordUCEView = ({ setSubView }) => (
     <div className="space-y-6 animate-in fade-in">
       <div className="grid md:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
@@ -2744,41 +3277,29 @@ const App = () => {
             Fila de Análise de Solicitações (RF021)
           </h3>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" icon={Filter}>
-              Filtrar
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSubView("validation")}
+            >
+              Ver Central de Validações
             </Button>
           </div>
         </div>
         <div className="divide-y">
-          {REQUESTS.filter((r) => r.status === "Pendente").map((req) => (
-            <div
-              key={req.id}
-              className="p-4 flex items-center justify-between hover:bg-blue-50 transition-colors group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
-                  {req.student.substring(0, 2)}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900">{req.student}</p>
-                  <p className="text-sm text-gray-500">
-                    {req.activity} •{" "}
-                    <span className="text-blue-600 font-medium">
-                      {req.ch_requested}h
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded flex items-center gap-1">
-                  <Clock size={12} /> Vence em 8 dias
+          {REQUESTS.filter((r) => r.status === "Pendente")
+            .slice(0, 3)
+            .map((req) => (
+              <div
+                key={req.id}
+                className="p-4 flex justify-between items-center"
+              >
+                <span>
+                  {req.student} - {req.activity}
                 </span>
-                <Button onClick={() => openAnalysis(req)} size="sm">
-                  Analisar
-                </Button>
+                <Badge status={req.status} />
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>
@@ -3156,13 +3677,40 @@ const App = () => {
                 </>
               )}
               {user.role.includes("coord") && (
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-blue-100 hover:bg-blue-800"
-                  icon={CheckCircle}
-                >
-                  Validações
-                </Button>
+                <>
+                  {user.role === "coord_uce" && (
+                    <Button
+                      variant={
+                        currentView === "validation" ? "secondary" : "ghost"
+                      }
+                      className={`w-full justify-start ${
+                        currentView === "validation"
+                          ? "bg-blue-800 text-white"
+                          : "text-blue-100 hover:bg-blue-800"
+                      }`}
+                      icon={CheckCircle}
+                      onClick={() => setSubView("validation")}
+                    >
+                      Validações (UCE)
+                    </Button>
+                  )}
+                  {user.role === "coord_curso" && (
+                    <Button
+                      variant={
+                        currentView === "conclusion" ? "secondary" : "ghost"
+                      }
+                      className={`w-full justify-start ${
+                        currentView === "conclusion"
+                          ? "bg-blue-800 text-white"
+                          : "text-blue-100 hover:bg-blue-800"
+                      }`}
+                      icon={Award}
+                      onClick={() => setSubView("conclusion")}
+                    >
+                      Relatórios de Conclusão
+                    </Button>
+                  )}
+                </>
               )}
             </nav>
           </div>
@@ -3323,9 +3871,22 @@ const App = () => {
         {/* Outras roles mantêm a view padrão por enquanto */}
         {(subView === "dashboard" || !["discente"].includes(user.role)) && (
           <>
-            {user.role === "coord_uce" && <CoordUCEView />}
+            {user.role === "coord_uce" && subView === "dashboard" && (
+              <CoordUCEView setSubView={setSubView} />
+            )}
+            {user.role === "coord_uce" && subView === "validation" && (
+              <ValidationPage onAnalyze={openAnalysis} />
+            )}
+
             {user.role === "docente" && <DocenteView />}
-            {user.role === "coord_curso" && <CoordCursoDashboard />}
+
+            {user.role === "coord_curso" && subView === "dashboard" && (
+              <CoordCursoDashboard />
+            )}
+            {user.role === "coord_curso" && subView === "conclusion" && (
+              <ConclusionReportPage />
+            )}
+
             {user.role === "discente_diretor" && <DiscenteDiretorDashboard />}
           </>
         )}
