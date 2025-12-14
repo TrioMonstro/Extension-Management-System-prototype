@@ -25,6 +25,7 @@ import {
   Check,
   XCircle,
   ArrowLeft,
+  ArrowRight,
   Mail,
   Save,
   Trash2,
@@ -131,16 +132,44 @@ const OPPORTUNITIES = [
       {
         id: 901,
         name: "João Silva",
-        curso: "CC",
+        curso: "Ciência da Computação",
         periodo: "4º",
+        matricula: "2022001122",
         status: "Pendente",
+        motivation:
+          "Tenho muito interesse em aprender sobre IA e suas aplicações práticas...",
+        curriculum: "cv_joao_silva.pdf",
+        appliedAt: "15/12/2024 10:30",
       },
       {
         id: 902,
         name: "Maria Costa",
-        curso: "EC",
+        curso: "Engenharia da Computação",
         periodo: "6º",
+        matricula: "2021009988",
         status: "Aprovado",
+        approvedAt: "16/12/2024 14:00",
+        approvedBy: "Prof. Anselmo Paiva",
+      },
+      {
+        id: 903,
+        name: "Pedro Santos",
+        curso: "Ciência da Computação",
+        periodo: "2º",
+        matricula: "2023005544",
+        status: "Pendente",
+        motivation: "Quero desenvolver minhas habilidades em programação...",
+        appliedAt: "15/12/2024 16:45",
+      },
+      {
+        id: 904,
+        name: "Ana Oliveira",
+        curso: "Sistemas de Informação",
+        periodo: "8º",
+        matricula: "2020003366",
+        status: "Rejeitado",
+        rejectedReason: "Perfil não atende aos requisitos da vaga",
+        rejectedAt: "16/12/2024 11:20",
       },
     ],
   },
@@ -637,8 +666,13 @@ const CreateOppWizard = ({ onClose }) => {
   const validateStep1 = () => {
     if (data.title.length < 10)
       return alert("Título deve ter min. 10 caracteres");
-    if (!data.ch || data.ch < 4) return alert("Carga horária mínima de 4h");
-    if (data.description.length < 50) return alert("Descrição muito curta");
+    if (!data.ch || data.ch < 4 || data.ch > 120)
+      return alert("Carga horária deve ser entre 4h e 120h");
+    if (data.ch % 2 !== 0) return alert("Carga horária deve ser múltiplo de 2");
+    if (data.description.length < 100)
+      return alert("Descrição muito curta (min 100 caracteres)");
+    if (!data.target.grad && !data.target.ext)
+      return alert("Selecione pelo menos um público-alvo");
     setStep(2);
   };
 
@@ -647,8 +681,10 @@ const CreateOppWizard = ({ onClose }) => {
       return alert("Cronograma de inscrição incompleto");
     if (!data.period.realStart || !data.period.realEnd)
       return alert("Cronograma de realização incompleto");
-    if (!data.vacancies || data.vacancies < 5)
-      return alert("Mínimo de 5 vagas");
+    if (new Date(data.period.enrollEnd) > new Date(data.period.realStart))
+      return alert("Inscrição deve acabar antes do início da atividade");
+    if (!data.vacancies || data.vacancies < 5 || data.vacancies > 200)
+      return alert("Vagas devem ser entre 5 e 200");
     setStep(3);
   };
 
@@ -667,9 +703,14 @@ const CreateOppWizard = ({ onClose }) => {
       public: data.publish,
       candidates: [],
       period: { start: data.period.realStart, end: data.period.realEnd },
+      target: data.target, // New field mock
     };
     OPPORTUNITIES.push(newOpp);
-    alert(data.publish ? "Oportunidade Publicada!" : "Salvo como Rascunho!");
+    alert(
+      data.publish
+        ? "✓ Oportunidade Publicada com Sucesso!"
+        : "✓ Salvo como Rascunho!"
+    );
     onClose();
   };
 
@@ -689,8 +730,8 @@ const CreateOppWizard = ({ onClose }) => {
       {step === 1 && (
         <div className="space-y-4 animate-in fade-in">
           <Input
-            label="Título da Atividade"
-            placeholder="Ex: Minicurso de Python"
+            label="Título da Atividade (min 10 chars)"
+            placeholder="Ex: Minicurso de Python Avançado"
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
             required
@@ -728,7 +769,7 @@ const CreateOppWizard = ({ onClose }) => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Carga Horária (h)"
+              label="Carga Horária (4h - 120h)"
               type="number"
               value={data.ch}
               onChange={(e) => setData({ ...data, ch: e.target.value })}
@@ -765,7 +806,7 @@ const CreateOppWizard = ({ onClose }) => {
           </div>
           <textarea
             className="w-full border p-3 rounded-md h-32 text-sm"
-            placeholder="Descrição detalhada..."
+            placeholder="Descrição detalhada (objetivos, conteúdo... min 100 chars)"
             value={data.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
           />
@@ -831,67 +872,98 @@ const CreateOppWizard = ({ onClose }) => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Vagas Totais"
+              label="Vagas Totais (5-200)"
               type="number"
               value={data.vacancies}
               onChange={(e) => setData({ ...data, vacancies: e.target.value })}
               required
             />
-            <div className="pt-6 border border-dashed rounded flex justify-center items-center text-sm text-gray-500 hover:bg-gray-50 cursor-pointer">
-              <Upload size={16} className="mr-2" /> Edital (PDF)
+            <div className="pt-6 border border-dashed rounded flex justify-center items-center text-sm text-gray-500 hover:bg-gray-50 cursor-pointer relative">
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={(e) => setData({ ...data, file: e.target.files[0] })}
+              />
+              <Upload size={16} className="mr-2" />{" "}
+              {data.file ? data.file.name : "Edital (PDF)"}
             </div>
           </div>
+          <textarea
+            className="w-full border p-2 rounded text-sm h-20"
+            placeholder="Critérios de seleção (opcional)..."
+            value={data.criteria}
+            onChange={(e) => setData({ ...data, criteria: e.target.value })}
+          />
         </div>
       )}
 
       {step === 3 && (
         <div className="space-y-6 animate-in fade-in">
           <div className="bg-gray-50 p-6 rounded-lg border">
-            <h3 className="text-lg font-bold text-gray-900">{data.title}</h3>
-            <p className="text-sm text-gray-500">
-              {data.type} • {data.modality} • {data.ch}h • {data.vacancies}{" "}
-              vagas
-            </p>
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <FileText size={20} /> Resumo da Oportunidade
+            </h3>
+
+            <div className="grid grid-cols-2 gap-6 text-sm mb-6">
               <div>
-                <p className="font-bold">Inscrições</p>
-                <p>
-                  {data.period.enrollStart} a {data.period.enrollEnd}
+                <p className="font-bold text-gray-700">Informações Gerais</p>
+                <p>{data.title}</p>
+                <p className="text-gray-500">
+                  {data.type} • {data.modality}
+                </p>
+                <p className="text-gray-500">
+                  {data.ch}h • {data.vacancies} vagas
                 </p>
               </div>
               <div>
-                <p className="font-bold">Realização</p>
-                <p>
-                  {data.period.realStart} a {data.period.realEnd}
-                </p>
+                <p className="font-bold text-gray-700">Cronograma</p>
+                <p>Inscrição: {data.period.enrollEnd}</p>
+                <p>Realização: {data.period.realStart}</p>
               </div>
             </div>
-          </div>
-          <div className="space-y-3">
-            <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input
-                type="radio"
-                name="status"
-                checked={!data.publish}
-                onChange={() => setData({ ...data, publish: false })}
-              />
-              <div>
-                <p className="font-bold text-gray-800">Salvar como Rascunho</p>
+
+            {data.file && (
+              <div className="flex items-center gap-2 bg-white p-2 rounded border mb-4">
+                <FileText size={16} className="text-blue-500" />
+                <span className="text-sm">{data.file.name}</span>
               </div>
-            </label>
-            <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-blue-50 border-blue-200">
-              <input
-                type="radio"
-                name="status"
-                checked={data.publish}
-                onChange={() => setData({ ...data, publish: true })}
-              />
-              <div>
-                <p className="font-bold text-blue-900">
-                  Publicar Imediatamente
-                </p>
-              </div>
-            </label>
+            )}
+
+            <div className="border-t pt-4">
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-white transition-colors mb-2">
+                <input
+                  type="radio"
+                  name="status"
+                  checked={!data.publish}
+                  onChange={() => setData({ ...data, publish: false })}
+                />
+                <div>
+                  <p className="font-bold text-gray-800">
+                    Salvar como Rascunho
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Você poderá revisar e publicar posteriormente.
+                  </p>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-blue-50 border-blue-200 transition-colors">
+                <input
+                  type="radio"
+                  name="status"
+                  checked={data.publish}
+                  onChange={() => setData({ ...data, publish: true })}
+                />
+                <div>
+                  <p className="font-bold text-blue-900">
+                    Publicar Imediatamente
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    ⚠️ A oportunidade ficará visível no portal e os discentes
+                    poderão se inscrever.
+                  </p>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
       )}
@@ -1102,7 +1174,563 @@ const AnalysisModal = ({ request, onClose }) => {
   );
 };
 
-// 5. LANDING PAGE ATUALIZADA (RF0003, RF045, RF027)
+// 5. MODAL DE GERENCIAMENTO DE INSCRITOS (RF015, RF017)
+const ManageCandidatesModal = ({ opportunity, onClose }) => {
+  const [tab, setTab] = useState("pendentes"); // pendentes, aprovados, rejeitados
+  const [candidates, setCandidates] = useState(opportunity?.candidates || []);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [actionModal, setActionModal] = useState(null); // 'approve', 'reject', 'remove'
+  const [reason, setReason] = useState("");
+  const [notify, setNotify] = useState(true);
+
+  useEffect(() => {
+    setCandidates(opportunity?.candidates || []);
+  }, [opportunity]);
+
+  const updateStatus = (id, newStatus, extraData = {}) => {
+    const updated = candidates.map((c) =>
+      c.id === id ? { ...c, status: newStatus, ...extraData } : c
+    );
+    setCandidates(updated);
+    // Update global mock for persistence
+    const opp = OPPORTUNITIES.find((o) => o.id === opportunity.id);
+    if (opp) opp.candidates = updated;
+
+    setActionModal(null);
+    setReason("");
+    setSelectedCandidate(null);
+    alert(`Status atualizado para: ${newStatus}`);
+  };
+
+  const getFilteredCandidates = () => {
+    if (tab === "pendentes")
+      return candidates.filter((c) => c.status === "Pendente");
+    if (tab === "aprovados")
+      return candidates.filter(
+        (c) => c.status === "Aprovado" || c.status === "Confirmado"
+      );
+    if (tab === "rejeitados")
+      return candidates.filter((c) => c.status === "Rejeitado");
+    return [];
+  };
+
+  if (!opportunity) return null;
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={`Gerenciar Inscritos - ${opportunity.title}`}
+      size="xl"
+    >
+      {/* Header Stats */}
+      <div className="flex gap-4 mb-6">
+        <div className="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg font-bold">
+          Total: {candidates.length}
+        </div>
+        <div className="bg-green-50 text-green-800 px-4 py-2 rounded-lg font-bold">
+          Aprovados: {candidates.filter((c) => c.status === "Aprovado").length}
+        </div>
+        <div className="bg-yellow-50 text-yellow-800 px-4 py-2 rounded-lg font-bold">
+          Pendentes: {candidates.filter((c) => c.status === "Pendente").length}
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 border-b mb-4">
+        {["pendentes", "aprovados", "rejeitados"].map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-2 capitalize font-medium ${
+              tab === t
+                ? "border-b-2 border-blue-600 text-blue-600"
+                : "text-gray-500"
+            }`}
+          >
+            {t} (
+            {
+              candidates.filter((c) =>
+                t === "pendentes"
+                  ? c.status === "Pendente"
+                  : t === "aprovados"
+                  ? c.status === "Aprovado" || c.status === "Confirmado"
+                  : c.status === "Rejeitado"
+              ).length
+            }
+            )
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      <div className="space-y-3 max-h-96 overflow-y-auto">
+        {getFilteredCandidates().map((c) => (
+          <div
+            key={c.id}
+            className="border p-4 rounded-lg flex justify-between items-start hover:bg-gray-50"
+          >
+            <div className="flex gap-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-500">
+                {c.name.substring(0, 2)}
+              </div>
+              <div>
+                <p className="font-bold text-gray-800">{c.name}</p>
+                <p className="text-xs text-gray-500">
+                  {c.curso} - {c.periodo} Período • Matrícula: {c.matricula}
+                </p>
+                {c.motivation && (
+                  <p className="text-sm text-gray-600 mt-2 bg-gray-50 p-2 rounded italic">
+                    "{c.motivation}"
+                  </p>
+                )}
+                {c.curriculum && (
+                  <button className="text-blue-600 text-xs flex items-center gap-1 mt-1 hover:underline">
+                    <FileText size={12} /> {c.curriculum}
+                  </button>
+                )}
+                {c.status === "Rejeitado" && c.rejectedReason && (
+                  <p className="text-xs text-red-600 mt-1">
+                    Motivo: {c.rejectedReason}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {tab === "pendentes" && (
+                <>
+                  <Button
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700"
+                    onClick={() => {
+                      setSelectedCandidate(c);
+                      setActionModal("approve");
+                    }}
+                  >
+                    Aprovar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => {
+                      setSelectedCandidate(c);
+                      setActionModal("reject");
+                    }}
+                  >
+                    Rejeitar
+                  </Button>
+                </>
+              )}
+              {tab === "aprovados" && (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => alert("Mensagem enviada!")}
+                    icon={Mail}
+                  >
+                    Msg
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-red-500"
+                    onClick={() => {
+                      setSelectedCandidate(c);
+                      setActionModal("remove");
+                    }}
+                  >
+                    Remover
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+        {getFilteredCandidates().length === 0 && (
+          <p className="text-center text-gray-500 py-8">
+            Nenhum candidato nesta aba.
+          </p>
+        )}
+      </div>
+
+      {/* Action Modals */}
+      {actionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
+          <div className="bg-white p-6 rounded-lg w-96 animate-in zoom-in">
+            <h3 className="font-bold text-lg mb-4">
+              {actionModal === "approve"
+                ? "Confirmar Aprovação"
+                : actionModal === "reject"
+                ? "Rejeitar Candidatura"
+                : "Remover Participante"}
+            </h3>
+
+            {actionModal === "approve" && (
+              <div>
+                <p className="mb-4">
+                  Aprovar <b>{selectedCandidate?.name}</b>?
+                </p>
+                <label className="flex items-center gap-2 mb-4">
+                  <input
+                    type="checkbox"
+                    checked={notify}
+                    onChange={(e) => setNotify(e.target.checked)}
+                  />{" "}
+                  Enviar e-mail de confirmação
+                </label>
+                <div className="flex justify-end gap-2">
+                  <Button variant="ghost" onClick={() => setActionModal(null)}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      updateStatus(selectedCandidate.id, "Aprovado", {
+                        approvedAt: new Date().toISOString(),
+                      })
+                    }
+                  >
+                    Confirmar
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {actionModal === "reject" && (
+              <div>
+                <textarea
+                  className="w-full border p-2 rounded mb-4"
+                  placeholder="Motivo da rejeição..."
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="ghost" onClick={() => setActionModal(null)}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() =>
+                      updateStatus(selectedCandidate.id, "Rejeitado", {
+                        rejectedReason: reason,
+                        rejectedAt: new Date().toISOString(),
+                      })
+                    }
+                  >
+                    Rejeitar
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {actionModal === "remove" && (
+              <div>
+                <p className="text-red-600 mb-2">⚠️ Essa ação libera 1 vaga.</p>
+                <textarea
+                  className="w-full border p-2 rounded mb-4"
+                  placeholder="Justificativa..."
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="ghost" onClick={() => setActionModal(null)}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() =>
+                      updateStatus(selectedCandidate.id, "Removido")
+                    }
+                  >
+                    Confirmar Remoção
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+};
+
+// 6. MODAL DE CERTIFICAÇÃO (RF019, RF025)
+const CertificationModal = ({ opportunity, user, onClose }) => {
+  const [step, setStep] = useState(1);
+  const [plan, setPlan] = useState({
+    objectives: "",
+    methodology: "",
+    results: "",
+    report: null,
+  });
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [confirmations, setConfirmations] = useState({
+    load: false,
+    report: false,
+  });
+  const [generated, setGenerated] = useState(false);
+
+  // Filter only approved candidates
+  const participants =
+    opportunity?.candidates?.filter(
+      (c) => c.status === "Aprovado" || c.status === "Confirmado"
+    ) || [];
+
+  const handleGenerate = () => {
+    if (!confirmations.load || !confirmations.report)
+      return alert("Confirme os termos!");
+
+    // Add certificates to global mock
+    selectedParticipants.forEach((id) => {
+      const participant = participants.find((p) => p.id === id);
+      const hash = Math.random().toString(36).substring(7);
+      const newCert = {
+        id: `CERT-2024-${hash}`,
+        student: participant.name,
+        matricula: participant.matricula,
+        activity: opportunity.title,
+        type: opportunity.type,
+        ch: opportunity.ch,
+        dateStart: opportunity.period.start,
+        dateEnd: opportunity.period.end,
+        dateIssued: new Date().toLocaleDateString("pt-BR"),
+        responsible: user.name,
+        hash: `${hash}-fake-verificacao`,
+        qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2024-${hash}`,
+      };
+      CERTIFICATES.push(newCert);
+      // Update participant status?
+    });
+
+    // Update Opportunity Status
+    const opp = OPPORTUNITIES.find((o) => o.id === opportunity.id);
+    if (opp) opp.status = "Encerrada";
+
+    setGenerated(true);
+  };
+
+  if (!opportunity) return null;
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title="Certificação de Participantes"
+      size="lg"
+    >
+      <div className="flex gap-2 mb-6">
+        <div
+          className={`h-2 flex-1 rounded-full ${
+            step >= 1 ? "bg-blue-600" : "bg-gray-200"
+          }`}
+        />
+        <div
+          className={`h-2 flex-1 rounded-full ${
+            step >= 2 ? "bg-blue-600" : "bg-gray-200"
+          }`}
+        />
+        <div
+          className={`h-2 flex-1 rounded-full ${
+            step >= 3 ? "bg-blue-600" : "bg-gray-200"
+          }`}
+        />
+      </div>
+
+      {!generated ? (
+        <>
+          {step === 1 && (
+            <div className="space-y-4 animate-in fade-in">
+              <div className="bg-yellow-50 p-3 rounded border border-yellow-200 text-sm text-yellow-800 flex gap-2">
+                <AlertTriangle size={16} /> ⚠️ Antes de emitir certificados,
+                registre o plano de atividades.
+              </div>
+              <textarea
+                className="w-full border p-2 rounded"
+                placeholder="Objetivos da atividade (min 100 chars)..."
+                value={plan.objectives}
+                onChange={(e) =>
+                  setPlan({ ...plan, objectives: e.target.value })
+                }
+                rows={3}
+              />
+              <textarea
+                className="w-full border p-2 rounded"
+                placeholder="Metodologia aplicada..."
+                value={plan.methodology}
+                onChange={(e) =>
+                  setPlan({ ...plan, methodology: e.target.value })
+                }
+                rows={3}
+              />
+              <textarea
+                className="w-full border p-2 rounded"
+                placeholder="Resultados alcançados..."
+                value={plan.results}
+                onChange={(e) => setPlan({ ...plan, results: e.target.value })}
+                rows={3}
+              />
+              <div className="border border-dashed p-4 rounded text-center cursor-pointer hover:bg-gray-50">
+                <Upload className="mx-auto text-gray-400 mb-2" />
+                <span className="text-sm text-gray-600">
+                  Upload Relatório Final (PDF)
+                </span>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-4 animate-in fade-in">
+              <p className="font-bold text-gray-800">
+                Selecione os participantes aptos:
+              </p>
+              <div className="border rounded-lg divide-y max-h-80 overflow-y-auto">
+                {participants.map((p) => (
+                  <label
+                    key={p.id}
+                    className="flex items-center p-3 hover:bg-gray-50 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      className="mr-3 w-5 h-5 text-blue-600"
+                      checked={selectedParticipants.includes(p.id)}
+                      onChange={(e) => {
+                        if (e.target.checked)
+                          setSelectedParticipants([
+                            ...selectedParticipants,
+                            p.id,
+                          ]);
+                        else
+                          setSelectedParticipants(
+                            selectedParticipants.filter((id) => id !== p.id)
+                          );
+                      }}
+                    />
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-800">{p.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {p.curso} • {p.matricula}
+                      </p>
+                    </div>
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">
+                      100% Presença
+                    </span>
+                  </label>
+                ))}
+                {participants.length === 0 && (
+                  <p className="p-4 text-center text-gray-500">
+                    Nenhum participante aprovado.
+                  </p>
+                )}
+              </div>
+              <p className="text-sm text-gray-600 text-right">
+                Selecionados: <b>{selectedParticipants.length}</b>
+              </p>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-6 animate-in fade-in">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-bold text-gray-800 mb-2">
+                  Resumo da Emissão
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Atividade: <b>{opportunity.title}</b>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Carga Horária: <b>{opportunity.ch}h</b>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Total de Certificados: <b>{selectedParticipants.length}</b>
+                </p>
+              </div>
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={confirmations.load}
+                    onChange={(e) =>
+                      setConfirmations({
+                        ...confirmations,
+                        load: e.target.checked,
+                      })
+                    }
+                  />{" "}
+                  Confirmo que os participantes cumpriram a carga horária.
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={confirmations.report}
+                    onChange={(e) =>
+                      setConfirmations({
+                        ...confirmations,
+                        report: e.target.checked,
+                      })
+                    }
+                  />{" "}
+                  Confirmo a veracidade das informações do relatório.
+                </label>
+              </div>
+              <p className="text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                📧 Os certificados serão enviados automaticamente por e-mail e
+                terão hash único.
+              </p>
+            </div>
+          )}
+
+          <div className="flex justify-between mt-8 pt-4 border-t">
+            {step > 1 ? (
+              <Button variant="outline" onClick={() => setStep(step - 1)}>
+                Voltar
+              </Button>
+            ) : (
+              <div />
+            )}
+            {step < 3 ? (
+              <Button
+                onClick={() => setStep(step + 1)}
+                disabled={step === 2 && selectedParticipants.length === 0}
+              >
+                Avancar
+              </Button>
+            ) : (
+              <Button
+                onClick={handleGenerate}
+                variant="primary"
+                icon={Award}
+                disabled={!confirmations.load || !confirmations.report}
+              >
+                Gerar Certificados
+              </Button>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="text-center py-12 animate-in zoom-in">
+          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={48} />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Certificados Emitidos!
+          </h2>
+          <p className="text-gray-500 mb-8">
+            {selectedParticipants.length} certificados foram gerados e enviados.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Button variant="outline" icon={Download}>
+              Baixar Todos (ZIP)
+            </Button>
+            <Button onClick={onClose}>Fechar</Button>
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+};
+
+// 7. LANDING PAGE ATUALIZADA (RF0003, RF045, RF027)
 const LandingPage = ({ onLogin, onRegister }) => {
   const [certCode, setCertCode] = useState("");
   const [validationResult, setValidationResult] = useState(null);
@@ -1916,6 +2544,7 @@ const App = () => {
   const [activeModal, setActiveModal] = useState(null); // 'createOpp', 'requestHours', 'analyze', 'enroll'
 
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
 
   // Handlers
   const handleLogin = (selectedUser) => {
@@ -2193,10 +2822,26 @@ const App = () => {
                     {op.filled}/{op.vacancies}
                   </td>
                   <td className="px-6 py-4 text-right flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" icon={Users}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Users}
+                      onClick={() => {
+                        setSelectedOpportunity(op);
+                        setActiveModal("manageCandidates");
+                      }}
+                    >
                       Gerenciar
                     </Button>
-                    <Button variant="ghost" size="sm" icon={FileText}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={FileText}
+                      onClick={() => {
+                        setSelectedOpportunity(op);
+                        setActiveModal("certification");
+                      }}
+                    >
                       Certificar
                     </Button>
                   </td>
@@ -2695,6 +3340,19 @@ const App = () => {
         {activeModal === "analyze" && (
           <AnalysisModal
             request={selectedRequest}
+            onClose={() => setActiveModal(null)}
+          />
+        )}
+        {activeModal === "manageCandidates" && (
+          <ManageCandidatesModal
+            opportunity={selectedOpportunity}
+            onClose={() => setActiveModal(null)}
+          />
+        )}
+        {activeModal === "certification" && (
+          <CertificationModal
+            opportunity={selectedOpportunity}
+            user={user}
             onClose={() => setActiveModal(null)}
           />
         )}
