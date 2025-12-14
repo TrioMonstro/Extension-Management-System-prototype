@@ -259,6 +259,47 @@ const OPPORTUNITIES = [
     candidates: [],
     period: { start: "15/11/2024", end: "15/05/2025" },
   },
+  {
+    id: 108,
+    title: "Campeonato de E-Sports UFMA",
+    type: "Evento",
+    status: "Rascunho",
+    ch: 20,
+    vacancies: 0,
+    filled: 0,
+    deadline: "",
+    description: "Campeonato intercursos de LOL e Valorant.",
+    author: "DACOMP",
+    public: false,
+    candidates: [],
+    responsibleDocent: null,
+    period: { start: "", end: "" },
+  },
+  {
+    id: 109,
+    title: "Semana de Recepção aos Calouros",
+    type: "Evento",
+    status: "Aguardando Aprovação",
+    ch: 40,
+    vacancies: 100,
+    filled: 0,
+    deadline: "01/02/2025",
+    description: "Palestras e atividades de integração.",
+    author: "DACOMP",
+    public: false,
+    candidates: [],
+    responsibleDocent: 1, // Anselmo
+    docentName: "Prof. Dr. Anselmo Paiva",
+    period: { start: "10/02/2025", end: "15/02/2025" },
+    submitDate: "12/12/2024",
+  },
+];
+
+const AVAILABLE_DOCENTS = [
+  { id: 1, name: "Prof. Dr. Anselmo Paiva", department: "DEINF" },
+  { id: 2, name: "Prof. Darlan Quintanilha", department: "DEINF" },
+  { id: 3, name: "Profa. Cláudia Santos", department: "DEINF" },
+  { id: 4, name: "Prof. Alexandre Cesar", department: "DEINF" },
 ];
 
 const CERTIFICATES = [
@@ -1280,10 +1321,6 @@ const ManageCandidatesModal = ({ opportunity, onClose }) => {
   const [actionModal, setActionModal] = useState(null); // 'approve', 'reject', 'remove'
   const [reason, setReason] = useState("");
   const [notify, setNotify] = useState(true);
-
-  useEffect(() => {
-    setCandidates(opportunity?.candidates || []);
-  }, [opportunity]);
 
   const updateStatus = (id, newStatus, extraData = {}) => {
     const updated = candidates.map((c) =>
@@ -3375,9 +3412,379 @@ const App = () => {
     </div>
   );
 
+  // --- 12. CRIAÇÃO DE INICIATIVA ESTUDANTIL (DISCENTE DIRETOR) - RF0002 ---
+
+  const CreateStudentInitiativeModal = ({ onClose, user }) => {
+    const [step, setStep] = useState(1);
+    const [data, setData] = useState({
+      title: "",
+      type: "Evento",
+      description: "",
+      ch: 4,
+      target: "Ambos",
+      docentId: "",
+      groupName: "DACOMP",
+      justification: "",
+      resources: {
+        space: false,
+        equipment: false,
+        support: false,
+        certs: false,
+      },
+      period: { start: "", end: "" },
+      inscriptionEnd: "",
+      vacancies: "",
+      terms: { reg: false, true: false },
+      action: "draft",
+    });
+
+    const validateStep1 = () => {
+      if (!data.title) return alert("Título é obrigatório");
+      if (data.description.length < 50)
+        return alert("Descrição muito curta (min 50)"); // Relaxado para 50 no mock
+      if (data.ch < 4 || data.ch > 80 || data.ch % 2 !== 0)
+        return alert("CH deve ser par, entre 4 e 80h");
+      setStep(2);
+    };
+
+    const validateStep2 = () => {
+      if (!data.docentId) return alert("Selecione um docente responsável");
+      if (data.justification.length < 20)
+        return alert("Justificativa muito curta");
+      if (!Object.values(data.resources).some(Boolean))
+        return alert("Selecione pelo menos um recurso");
+      setStep(3);
+    };
+
+    const validateStep3 = () => {
+      if (!data.period.start || !data.period.end)
+        return alert("Período obrigatório");
+      setStep(4);
+    };
+
+    const handleSubmit = () => {
+      if (data.action !== "draft" && (!data.terms.reg || !data.terms.true))
+        return alert("Aceite os termos para submeter");
+
+      const docent = AVAILABLE_DOCENTS.find((d) => d.id == data.docentId);
+      const newOpp = {
+        id: Math.floor(Math.random() * 1000) + 2000,
+        title: data.title,
+        type: data.type,
+        status: data.action === "draft" ? "Rascunho" : "Aguardando Aprovação",
+        ch: data.ch,
+        vacancies: data.vacancies || 0,
+        filled: 0,
+        deadline: data.inscriptionEnd,
+        description: data.description,
+        author: "DACOMP",
+        authorName: user.name,
+        public: false,
+        candidates: [],
+        responsibleDocent: data.docentId,
+        docentName: docent ? docent.name : "",
+        period: data.period,
+        submitDate: new Date().toLocaleDateString(),
+      };
+      OPPORTUNITIES.push(newOpp);
+      alert(
+        data.action === "draft"
+          ? "Rascunho salvo!"
+          : `Iniciativa submetida para ${docent.name}!`
+      );
+      onClose();
+    };
+
+    return (
+      <Modal
+        isOpen={true}
+        onClose={onClose}
+        title="Nova Iniciativa Estudantil"
+        size="lg"
+      >
+        {/* Steps */}
+        <div className="flex gap-2 mb-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className={`h-2 flex-1 rounded-full ${
+                step >= i ? "bg-blue-800" : "bg-gray-200"
+              }`}
+            />
+          ))}
+        </div>
+
+        {step === 1 && (
+          <div className="space-y-4 animate-in fade-in">
+            <Input
+              label="Título da Iniciativa"
+              value={data.title}
+              onChange={(e) => setData({ ...data, title: e.target.value })}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Tipo</label>
+                <select
+                  className="w-full border p-2 rounded"
+                  value={data.type}
+                  onChange={(e) => setData({ ...data, type: e.target.value })}
+                >
+                  <option>Evento</option>
+                  <option>Workshop</option>
+                  <option>Palestra</option>
+                  <option>Campeonato</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Público-alvo</label>
+                <select
+                  className="w-full border p-2 rounded"
+                  value={data.target}
+                  onChange={(e) => setData({ ...data, target: e.target.value })}
+                >
+                  <option>Graduação</option>
+                  <option>Comunidade</option>
+                  <option>Ambos</option>
+                </select>
+              </div>
+            </div>
+            <Input
+              label="Carga Horária (4-80h, par)"
+              type="number"
+              value={data.ch}
+              onChange={(e) => setData({ ...data, ch: e.target.value })}
+            />
+            <textarea
+              className="w-full border p-2 rounded h-24"
+              placeholder="Descrição detalhada..."
+              value={data.description}
+              onChange={(e) =>
+                setData({ ...data, description: e.target.value })
+              }
+            />
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-4 animate-in fade-in">
+            <div className="bg-blue-50 p-4 rounded border-l-4 border-blue-600">
+              <label className="block text-sm font-bold text-blue-900 mb-1">
+                Docente Responsável (Obrigatório)
+              </label>
+              <select
+                className="w-full border p-2 rounded"
+                value={data.docentId}
+                onChange={(e) => setData({ ...data, docentId: e.target.value })}
+              >
+                <option value="">Selecione um professor...</option>
+                {AVAILABLE_DOCENTS.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} ({d.department})
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-blue-700 mt-1">
+                O docente selecionado precisará validar esta iniciativa.
+              </p>
+            </div>
+            <Input label="Grupo Organizador" value={data.groupName} disabled />
+            <textarea
+              className="w-full border p-2 rounded h-20"
+              placeholder="Justificativa e alinhamento com o curso..."
+              value={data.justification}
+              onChange={(e) =>
+                setData({ ...data, justification: e.target.value })
+              }
+            />
+            <div>
+              <p className="text-sm font-bold mb-2">Recursos Necessários</p>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {Object.keys(data.resources).map((k) => (
+                  <label key={k} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={data.resources[k]}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          resources: {
+                            ...data.resources,
+                            [k]: e.target.checked,
+                          },
+                        })
+                      }
+                    />
+                    {k === "space"
+                      ? "Espaço Físico"
+                      : k === "equipment"
+                      ? "Equipamentos"
+                      : k === "support"
+                      ? "Divulgação"
+                      : "Certificação"}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="space-y-4 animate-in fade-in">
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Início"
+                type="date"
+                value={data.period.start}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    period: { ...data.period, start: e.target.value },
+                  })
+                }
+              />
+              <Input
+                label="Fim"
+                type="date"
+                value={data.period.end}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    period: { ...data.period, end: e.target.value },
+                  })
+                }
+              />
+            </div>
+            <Input
+              label="Vagas (Opcional)"
+              type="number"
+              value={data.vacancies}
+              onChange={(e) => setData({ ...data, vacancies: e.target.value })}
+            />
+            <div className="border border-dashed p-6 rounded text-center text-gray-500 cursor-pointer hover:bg-gray-50">
+              <Upload className="mx-auto mb-2" /> Upload de Regulamento/Projeto
+              (PDF)
+            </div>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="space-y-6 animate-in fade-in">
+            <div className="bg-gray-50 p-4 rounded border">
+              <h3 className="font-bold flex items-center gap-2">
+                <FileText size={18} /> Resumo
+              </h3>
+              <p className="text-sm">
+                {data.title} ({data.type})
+              </p>
+              <div className="mt-2 text-sm text-blue-800 bg-blue-100 p-2 rounded flex items-center gap-2">
+                <User size={14} />
+                Responsável:{" "}
+                <strong>
+                  {AVAILABLE_DOCENTS.find((d) => d.id == data.docentId)?.name ||
+                    "Não selecionado"}
+                </strong>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={data.terms.reg}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      terms: { ...data.terms, reg: e.target.checked },
+                    })
+                  }
+                />{" "}
+                Li o regulamento de extensão.
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={data.terms.true}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      terms: { ...data.terms, true: e.target.checked },
+                    })
+                  }
+                />{" "}
+                As informações são verdadeiras.
+              </label>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <label
+                className={`border p-3 rounded cursor-pointer ${
+                  data.action === "draft" ? "border-blue-500 bg-blue-50" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="act"
+                  className="mr-2"
+                  checked={data.action === "draft"}
+                  onChange={() => setData({ ...data, action: "draft" })}
+                />
+                Salvar Rascunho
+              </label>
+              <label
+                className={`border p-3 rounded cursor-pointer ${
+                  data.action === "submit" ? "border-green-500 bg-green-50" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="act"
+                  className="mr-2"
+                  checked={data.action === "submit"}
+                  onChange={() => setData({ ...data, action: "submit" })}
+                />
+                Submeter Agora
+              </label>
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-between mt-6 pt-4 border-t">
+          {step > 1 ? (
+            <Button variant="outline" onClick={() => setStep(step - 1)}>
+              Voltar
+            </Button>
+          ) : (
+            <div />
+          )}
+          {step < 4 ? (
+            <Button
+              onClick={() => {
+                if (step === 1) validateStep1();
+                else if (step === 2) validateStep2();
+                else if (step === 3) validateStep3();
+              }}
+            >
+              Próximo <ArrowRight size={16} className="ml-2" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              variant={data.action === "submit" ? "primary" : "outline"}
+            >
+              {data.action === "submit"
+                ? "Submeter Pedido"
+                : "Concluir Rascunho"}
+            </Button>
+          )}
+        </div>
+      </Modal>
+    );
+  };
+
   // Discente Diretor Dashboard (Lucas - Híbrido)
   const DiscenteDiretorDashboard = () => {
     const [tab, setTab] = useState("pessoal");
+    const [feedbackModal, setFeedbackModal] = useState(null);
 
     return (
       <div className="space-y-6">
@@ -3405,7 +3812,7 @@ const App = () => {
         </div>
 
         {tab === "pessoal" ? (
-          <DiscenteView />
+          <DiscenteView setSubView={() => {}} />
         ) : (
           <div className="space-y-6 animate-in fade-in">
             <div className="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -3420,7 +3827,7 @@ const App = () => {
               <Button
                 variant="primary"
                 icon={PlusCircle}
-                onClick={() => setActiveModal("createOpp")}
+                onClick={() => setActiveModal("createStudentOpp")}
               >
                 Nova Iniciativa
               </Button>
@@ -3436,60 +3843,114 @@ const App = () => {
                     (op) => (
                       <div key={op.id} className="border p-4 rounded-lg">
                         <div className="flex justify-between mb-2">
-                          <span className="font-bold text-gray-800">
+                          <span className="font-bold text-gray-800 line-clamp-1">
                             {op.title}
                           </span>
-                          <Badge status={op.status} />
+                          <Badge
+                            status={
+                              op.status === "Abertas" ? "Aprovado" : op.status
+                            }
+                          />
                         </div>
+
                         {op.status === "Rascunho" && (
-                          <div className="bg-yellow-50 text-yellow-800 text-xs p-2 rounded mt-2">
-                            Aguardando submissão para Prof. Responsável
+                          <div className="bg-gray-100 text-gray-600 text-xs p-2 rounded mt-2 mb-2 flex items-center gap-2">
+                            <File size={12} /> Rascunho salvo.
                           </div>
                         )}
+                        {op.status === "Aguardando Aprovação" && (
+                          <div className="bg-yellow-50 text-yellow-800 text-xs p-2 rounded mt-2 mb-2 flex items-center gap-2">
+                            <Clock size={12} /> Aguardando validação de{" "}
+                            {op.docentName
+                              ? op.docentName.split(" ")[0]
+                              : "Docente"}
+                          </div>
+                        )}
+
                         <div className="flex gap-2 mt-3">
-                          <Button
-                            variant="outline"
-                            className="text-xs py-1 h-8"
-                          >
-                            Editar
-                          </Button>
-                          <Button variant="ghost" className="text-xs py-1 h-8">
-                            Participantes ({op.filled})
-                          </Button>
+                          {op.status === "Rascunho" && (
+                            <>
+                              <Button
+                                variant="outline"
+                                className="text-xs py-1 h-8"
+                              >
+                                Editar
+                              </Button>
+                              <Button className="text-xs py-1 h-8">
+                                Submeter
+                              </Button>
+                            </>
+                          )}
+                          {op.status === "Aguardando Aprovação" && (
+                            <Button
+                              variant="ghost"
+                              className="text-xs py-1 h-8"
+                              onClick={() => setFeedbackModal(op)}
+                            >
+                              Ver Status
+                            </Button>
+                          )}
+                          {op.status === "Abertas" && (
+                            <>
+                              <Button
+                                variant="outline"
+                                className="text-xs py-1 h-8"
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                className="text-xs py-1 h-8"
+                              >
+                                Gerenciar
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     )
                   )}
                 </div>
               </Card>
-
               <Card className="p-6">
                 <h3 className="font-bold text-gray-800 mb-4">
-                  Status de Validação Docente
+                  Mural de Avisos da Coordenação
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3 text-sm text-gray-600">
-                    <CheckCircle className="text-green-500 mt-0.5" size={16} />
-                    <div>
-                      <p className="font-bold text-gray-900">
-                        Maratona de Programação
-                      </p>
-                      <p>Aprovado por Prof. Anselmo em 10/11/2024</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 text-sm text-gray-600">
-                    <Clock className="text-yellow-500 mt-0.5" size={16} />
-                    <div>
-                      <p className="font-bold text-gray-900">
-                        Semana de Tecnologia
-                      </p>
-                      <p>Aguardando análise de Prof. Darlan</p>
-                    </div>
-                  </div>
+                <div className="bg-blue-50 p-4 rounded text-sm text-blue-900 mb-4">
+                  <p className="font-bold mb-1">Prazo de Submissão 2024.2</p>
+                  <p>Iniciativas devem ser submetidas até 15/02.</p>
                 </div>
               </Card>
             </div>
           </div>
+        )}
+
+        {feedbackModal && (
+          <Modal
+            isOpen={true}
+            onClose={() => setFeedbackModal(null)}
+            title="Status da Iniciativa"
+            size="md"
+          >
+            <div className="text-center py-6">
+              <Clock size={48} className="mx-auto text-yellow-500 mb-4" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Aguardando Validação
+              </h3>
+              <p className="text-gray-600 mb-6">
+                A iniciativa <strong>{feedbackModal.title}</strong> foi enviada
+                para análise de <strong>{feedbackModal.docentName}</strong> em{" "}
+                {feedbackModal.submitDate || "12/12/2024"}.
+              </p>
+              <div className="bg-gray-50 p-4 rounded text-sm text-left mb-6">
+                <p>
+                  <strong>Prazo estimado:</strong> 5 dias úteis
+                </p>
+                <p>Você será notificado assim que houver uma decisão.</p>
+              </div>
+              <Button onClick={() => setFeedbackModal(null)}>Entendi</Button>
+            </div>
+          </Modal>
         )}
       </div>
     );
@@ -3867,7 +4328,6 @@ const App = () => {
         {subView === "opportunities" && <OpportunitiesPage />}
         {subView === "requests" && <RequestsPage />}
         {subView === "gallery" && <CertificatesGalleryPage />}
-
         {/* Outras roles mantêm a view padrão por enquanto */}
         {(subView === "dashboard" || !["discente"].includes(user.role)) && (
           <>
@@ -3890,7 +4350,6 @@ const App = () => {
             {user.role === "discente_diretor" && <DiscenteDiretorDashboard />}
           </>
         )}
-
         {/* MODAIS GLOBAIS */}
         {activeModal === "createOpp" && (
           <CreateOppWizard onClose={() => setActiveModal(null)} />
@@ -3913,6 +4372,12 @@ const App = () => {
         {activeModal === "certification" && (
           <CertificationModal
             opportunity={selectedOpportunity}
+            user={user}
+            onClose={() => setActiveModal(null)}
+          />
+        )}
+        {activeModal === "createStudentOpp" && (
+          <CreateStudentInitiativeModal
             user={user}
             onClose={() => setActiveModal(null)}
           />
