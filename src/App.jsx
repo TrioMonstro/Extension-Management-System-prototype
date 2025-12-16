@@ -852,6 +852,270 @@ const RegistrationFlow = ({ onCancel, onComplete }) => {
   );
 };
 
+// 1.5 TELA DE LOGIN REAL (RF001-RF005)
+const LoginScreen = ({ onCancel, onSuccess }) => {
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    // Simulação de login (validação mockada)
+    setTimeout(() => {
+      // Validar credenciais mockadas
+      const mockCredentials = {
+        "talyson.r@discente.ufma.br": {
+          password: "123456",
+          user: USERS.DISCENTE,
+        },
+        "anselmo.paiva@ufma.br": { password: "123456", user: USERS.DOCENTE },
+        "alexandre.cesar@ufma.br": {
+          password: "123456",
+          user: USERS.COORD_UCE,
+        },
+        "darlan.quintanilha@ufma.br": {
+          password: "123456",
+          user: USERS.COORD_CURSO,
+        },
+        "lucas.farias@discente.ufma.br": {
+          password: "123456",
+          user: USERS.DISCENTE_DIRETOR,
+        },
+      };
+
+      const account = mockCredentials[credentials.email.toLowerCase()];
+
+      if (!account) {
+        setError("E-mail não encontrado no sistema.");
+        setLoading(false);
+        return;
+      }
+
+      if (account.password !== credentials.password) {
+        setError("Senha incorreta. Tente novamente.");
+        setLoading(false);
+        return;
+      }
+
+      // Login bem-sucedido
+      setLoading(false);
+      onSuccess(account.user);
+    }, 1000);
+  };
+
+  const handleForgotPassword = () => {
+    setShowForgotPassword(true);
+  };
+
+  const handleSendRecovery = (email) => {
+    alert(
+      `Link de recuperação enviado para: ${email}\n\nEste link expira em 2 horas (RNF001).`
+    );
+    setShowForgotPassword(false);
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div className="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-4">
+        <div className="max-w-md w-full animate-in zoom-in">
+          <button
+            onClick={() => setShowForgotPassword(false)}
+            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft size={20} />
+            Voltar ao Login
+          </button>
+
+          <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail size={32} className="text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Recuperar Senha
+              </h2>
+              <p className="text-gray-500 mt-2">
+                Digite seu e-mail institucional para receber o link de
+                recuperação.
+              </p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const email = e.target.email.value;
+                handleSendRecovery(email);
+              }}
+            >
+              <Input
+                id="email"
+                label="E-mail Institucional"
+                type="email"
+                placeholder="seu.email@ufma.br"
+                required
+                helper="O link expira em 2 horas"
+              />
+
+              <Button type="submit" className="w-full mt-4">
+                Enviar Link de Recuperação
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-gray-100 z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
+      <div className="max-w-md w-full my-auto text-sm">
+        {/* Botão Voltar */}
+        <button
+          onClick={onCancel}
+          className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          Voltar para Página Inicial
+        </button>
+
+        <div className="bg-white p-8 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in">
+          {/* Logo e Título */}
+          <div className="text-center mb-8">
+            <img
+              src="/src/assets/PNG - Logo UFMA colorido.png"
+              alt="Logo UFMA"
+              className="h-16 w-auto mx-auto mb-4 object-contain"
+            />
+            <h2 className="text-2xl font-bold text-gray-900">
+              Acesso ao Sistema
+            </h2>
+            <p className="text-gray-500 mt-1">
+              Sistema de Extensão Universitária
+            </p>
+          </div>
+
+          {/* Formulário */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <Input
+              label="E-mail Institucional"
+              type="email"
+              placeholder="seu.email@ufma.br"
+              value={credentials.email}
+              onChange={(e) =>
+                setCredentials({ ...credentials, email: e.target.value })
+              }
+              required
+              error={error && error.includes("E-mail") ? error : ""}
+            />
+
+            <div>
+              <Input
+                label="Senha"
+                type="password"
+                placeholder="••••••••"
+                value={credentials.password}
+                onChange={(e) =>
+                  setCredentials({ ...credentials, password: e.target.value })
+                }
+                required
+                error={error && error.includes("Senha") ? error : ""}
+              />
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm text-blue-600 hover:underline mt-1"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 p-3 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+                <AlertTriangle size={16} />
+                {error}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || !credentials.email || !credentials.password}
+            >
+              {loading ? "Entrando..." : "Entrar"}
+            </Button>
+          </form>
+
+          {/* Divisor */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">ou</span>
+            </div>
+          </div>
+
+          {/* Link para Cadastro */}
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Ainda não tem conta?{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  onCancel();
+                  // Trigger registro no próximo tick
+                  setTimeout(() => {
+                    document
+                      .querySelector('[data-trigger="register"]')
+                      ?.click();
+                  }, 100);
+                }}
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Criar conta de discente
+              </button>
+            </p>
+          </div>
+
+          {/* Informações de Teste - Compacto */}
+          <details className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs group">
+            <summary className="text-blue-800 font-semibold cursor-pointer select-none list-none flex justify-between items-center outline-none">
+              <span>🧪 Ver Credenciais de Teste</span>
+              <span className="text-blue-400 group-open:rotate-180 transition-transform">
+                ▼
+              </span>
+            </summary>
+            <div className="mt-2 pt-2 border-t border-blue-200 text-blue-700 space-y-1">
+              <p>
+                • <strong>Discente:</strong> talyson.r@discente.ufma.br
+              </p>
+              <p>
+                • <strong>Docente:</strong> anselmo.paiva@ufma.br
+              </p>
+              <p>
+                • <strong>Coord UCE:</strong> alexandre.cesar@ufma.br
+              </p>
+              <p>
+                • <strong>Coord Curso:</strong> darlan.quintanilha@ufma.br
+              </p>
+              <p className="mt-1 border-t border-blue-200 pt-1 text-[10px] text-blue-500">
+                Senha padrão para todos: <strong>123456</strong>
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // 2. WIZARD DE CRIAÇÃO DE OPORTUNIDADE (RF011, RF012)
 const CreateOppWizard = ({ onClose }) => {
   const [step, setStep] = useState(1);
@@ -1978,7 +2242,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
               className="h-12 w-auto object-contain"
             />
             <div>
-              <h1 className="text-lg font-bold leading-tight">
+              <h1 className="text-lg font-bold leading-tight text-white">
                 Sistema de Extensão
               </h1>
               <p className="text-xs text-blue-100 opacity-90">
@@ -2000,6 +2264,16 @@ const LandingPage = ({ onLogin, onRegister }) => {
             <button
               onClick={() =>
                 document
+                  .getElementById("faq")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="text-sm font-semibold hover:text-accent-gold transition-colors"
+            >
+              Perguntas Frequentes
+            </button>
+            <button
+              onClick={() =>
+                document
                   .getElementById("validar")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
@@ -2009,10 +2283,17 @@ const LandingPage = ({ onLogin, onRegister }) => {
             </button>
             <button
               onClick={onLogin}
+              data-trigger="login"
               className="bg-white text-gov-blue px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors shadow-sm"
             >
               Acesso Restrito
             </button>
+            <button
+              data-trigger="register"
+              onClick={onRegister}
+              className="hidden"
+              aria-hidden="true"
+            />
           </nav>
         </div>
       </header>
@@ -2028,13 +2309,13 @@ const LandingPage = ({ onLogin, onRegister }) => {
               Portal Oficial
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Conectando a Universidade <br />
-            <span className="text-accent-gold">à Sociedade</span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-white">
+            Sistema de Extensão Universitária <br />
+            <span className="text-accent-gold">UFMA</span>
           </h2>
           <p className="text-lg text-blue-100 max-w-2xl mx-auto mb-10">
-            A plataforma oficial para gerenciar carga horária, emitir
-            certificados e conectar a UFMA à sociedade.
+            A plataforma para gerenciar carga horária, emitir certificados
+            Plataforma e ter controle das atividades.
           </p>
           <div className="flex justify-center gap-4">
             <button
@@ -2370,6 +2651,47 @@ const OpportunitiesPage = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* FAQ Section */}
+      <div id="faq" className="bg-white py-16 border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            Perguntas Frequentes
+          </h3>
+          <div className="space-y-6">
+            {[
+              {
+                q: "Como valido meu certificado?",
+                a: "Utilize o código QR presente no documento ou insira o código alfanumérico na seção 'Validar Certificado' desta página.",
+              },
+              {
+                q: "Quem pode participar das atividades?",
+                a: "A maioria das atividades é aberta aos discentes da UFMA, mas muitas também aceitam membros da comunidade externa. Verifique os requisitos de cada edital.",
+              },
+              {
+                q: "Como solicitar horas complementares?",
+                a: "Faça login no portal do discente, acesse a opção 'Solicitar Horas' no menu principal e anexe seus certificados digitalizados.",
+              },
+              {
+                q: "Qual o prazo para análise?",
+                a: "Os coordenadores têm um prazo médio de 15 dias para analisar e deferir as solicitações de carga horária.",
+              },
+            ].map((faq, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow"
+              >
+                <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <span className="text-blue-600">?</span> {faq.q}
+                </h4>
+                <p className="text-gray-600 leading-relaxed text-sm ml-5">
+                  {faq.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {selectedOpp && (
@@ -2778,6 +3100,131 @@ const CertificatesGalleryPage = () => {
   );
 };
 
+// MODAL DE COMUNICADO EM MASSA (RF044)
+const MassNotificationModal = ({ onClose, userRole }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    message: "",
+    urgent: false,
+    sendEmail: true,
+  });
+
+  const handleSend = () => {
+    if (!formData.title || !formData.message) {
+      alert("Preencha título e mensagem!");
+      return;
+    }
+
+    alert(
+      `📨 Comunicado Enviado!\n\n` +
+        `Destinatários: Todos os Discentes (Padrão)\n` +
+        `Título: ${formData.title}\n` +
+        `${
+          formData.sendEmail
+            ? "✉️ E-mail enviado"
+            : "🔔 Apenas notificação no sistema"
+        }\n` +
+        `${formData.urgent ? "⚠️ Marcado como URGENTE" : ""}`
+    );
+
+    onClose();
+  };
+
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title="Enviar Comunicado em Massa"
+      size="lg"
+    >
+      <div className="space-y-6">
+        {/* RF044 Info */}
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-800">
+          <strong>RF044:</strong> Esta funcionalidade enviará um comunicado
+          geral para todos os usuários ativos no sistema.
+        </div>
+
+        {/* Title */}
+        <Input
+          label="Título do Comunicado"
+          placeholder="Ex: Prazo de inscrições UCE prorrogado"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          required
+        />
+
+        {/* Message */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-800 mb-2">
+            Mensagem <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            className="w-full px-4 py-3 border-2 rounded-lg text-gray-800 text-base transition-all focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none resize-none"
+            rows={6}
+            placeholder="Digite a mensagem do comunicado..."
+            value={formData.message}
+            onChange={(e) =>
+              setFormData({ ...formData, message: e.target.value })
+            }
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            {formData.message.length} / 500 caracteres
+          </p>
+        </div>
+
+        {/* Additional Options */}
+        <div className="space-y-3 pt-4 border-t">
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={formData.urgent}
+              onChange={(e) =>
+                setFormData({ ...formData, urgent: e.target.checked })
+              }
+              className="w-4 h-4"
+            />
+            <div>
+              <p className="font-medium text-gray-900">Marcar como urgente</p>
+              <p className="text-xs text-gray-500">
+                Comunicado aparecerá em destaque
+              </p>
+            </div>
+          </label>
+
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={formData.sendEmail}
+              onChange={(e) =>
+                setFormData({ ...formData, sendEmail: e.target.checked })
+              }
+              className="w-4 h-4"
+            />
+            <div>
+              <p className="font-medium text-gray-900">
+                Enviar também por e-mail
+              </p>
+              <p className="text-xs text-gray-500">
+                Além da notificação no sistema
+              </p>
+            </div>
+          </label>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-3 pt-4 border-t">
+          <Button variant="ghost" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSend} icon={Mail}>
+            Enviar Comunicado
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 // --- COMPONENTE PRINCIPAL DO APP ---
 
 const App = () => {
@@ -2790,11 +3237,7 @@ const App = () => {
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
 
   // Handlers
-  const handleLogin = (selectedUser) => {
-    setUser(selectedUser);
-    setView("dashboard");
-    setSubView("dashboard");
-  };
+  // handleLogin removed - now done via LoginScreen component
 
   const openAnalysis = (req) => {
     setSelectedRequest(req);
@@ -3227,12 +3670,62 @@ const App = () => {
 
   const ConclusionReportPage = () => {
     const [selectedStudents, setSelectedStudents] = useState([]);
-    const [showConfirm, setShowConfirm] = useState(false);
 
     const toggleSelect = (id) => {
       setSelectedStudents((prev) =>
         prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
       );
+    };
+
+    const handleGenerateReport = () => {
+      if (selectedStudents.length === 0) {
+        alert("Selecione pelo menos um aluno!");
+        return;
+      }
+
+      const selectedData = COMPLETED_STUDENTS.filter((s) =>
+        selectedStudents.includes(s.id)
+      );
+
+      // Generate CSV
+      const csvContent = [
+        [
+          "Matrícula",
+          "Nome Completo",
+          "PPC",
+          "Total de Horas",
+          "Data de Conclusão",
+          "Status",
+        ].join(","),
+        ...selectedData.map((s) =>
+          [
+            s.matricula,
+            s.name,
+            s.ppc,
+            s.totalHours,
+            s.completedAt,
+            s.status,
+          ].join(",")
+        ),
+      ].join("\n");
+
+      // Download CSV
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `relatorio-conclusao-uce-${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
+      link.click();
+
+      alert(
+        `✅ Relatório Gerado com Sucesso!\n\n` +
+          `📊 ${selectedData.length} alunos incluídos\n` +
+          `📅 Semestre: ${CURR_SEM}\n\n` +
+          `Este relatório deve ser enviado à Coordenação de Extensão (UCE) para o lançamento oficial no SIGAA.`
+      );
+
+      setSelectedStudents([]);
     };
 
     return (
@@ -3243,24 +3736,33 @@ const App = () => {
               Relatórios de Conclusão - UCE
             </h2>
             <p className="text-gray-500">
-              Alunos aptos para lançamento de carga horária no SIGAA.
+              Alunos aptos para <strong>envio à Coordenação UCE</strong> para
+              lançamento.
             </p>
+            {/* NEW: Explanatory notice */}
+            <div className="mt-3 bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-800">
+              <strong>ℹ️ RF0005:</strong> Este relatório é para{" "}
+              <strong>consulta e geração de documentação</strong>. O lançamento
+              no SIGAA é feito pela{" "}
+              <strong>Coordenação de Extensão (UCE)</strong>.
+            </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" icon={FileText}>
-              Gerar PDF
+              Gerar PDF Completo
             </Button>
             <Button
-              onClick={() => setShowConfirm(true)}
+              onClick={handleGenerateReport}
               disabled={selectedStudents.length === 0}
               className={
                 selectedStudents.length > 0
-                  ? "bg-green-600 hover:bg-green-700"
+                  ? "bg-green-600 hover:bg-green-700" // Cor de destaque quando ativo
                   : ""
               }
-              icon={CheckCircle}
+              variant={selectedStudents.length > 0 ? "secondary" : "outline"} // Secondary style
+              icon={Download}
             >
-              Exportar p/ SIGAA ({selectedStudents.length})
+              Exportar CSV ({selectedStudents.length})
             </Button>
           </div>
         </div>
@@ -3356,99 +3858,96 @@ const App = () => {
             </tbody>
           </table>
         </div>
-
-        {showConfirm && (
-          <Modal
-            isOpen={true}
-            onClose={() => setShowConfirm(false)}
-            title="Confirmar Lançamento no SIGAA"
-            size="md"
-          >
-            <div className="space-y-4">
-              <div className="bg-yellow-50 p-4 rounded text-sm text-yellow-800 border-l-4 border-yellow-400">
-                Atenção: Esta ação registrará o aproveitamento de carga horária
-                para <strong>{selectedStudents.length} alunos</strong> no SIGAA.
-                Esta ação é irreversível.
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" /> Verifiquei que todos concluíram
-                  345h.
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" /> Confirmo que os dados estão
-                  corretos.
-                </label>
-              </div>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline" onClick={() => setShowConfirm(false)}>
-                  Cancelar
-                </Button>
-                <Button
-                  onClick={() => {
-                    alert("Lançamento realizado com sucesso!");
-                    setShowConfirm(false);
-                  }}
-                >
-                  Confirmar Lançamento
-                </Button>
-              </div>
-            </div>
-          </Modal>
-        )}
       </div>
     );
   };
 
   // Coord UCE View (Alexandre) - Foco em Análise
-  const CoordUCEView = ({ setSubView }) => (
-    <div className="space-y-6 animate-in fade-in">
-      <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
-          <p className="text-xs text-gray-500 uppercase font-bold">Pendentes</p>
-          <p className="text-2xl font-bold text-gray-900">12</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-red-500">
-          <p className="text-xs text-gray-500 uppercase font-bold">
-            Prazos Críticos
-          </p>
-          <p className="text-2xl font-bold text-gray-900">3</p>
-        </div>
-      </div>
+  const CoordUCEView = ({ setSubView }) => {
+    const [showMassNotification, setShowMassNotification] = useState(false);
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
-          <h3 className="font-bold text-gray-800">
-            Fila de Análise de Solicitações (RF021)
-          </h3>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSubView("validation")}
-            >
-              Ver Central de Validações
-            </Button>
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        <div className="grid md:grid-cols-4 gap-4">
+          <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
+            <p className="text-xs text-gray-500 uppercase font-bold">
+              Pendentes
+            </p>
+            <p className="text-2xl font-bold text-gray-900">12</p>
+          </div>
+          <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-red-500">
+            <p className="text-xs text-gray-500 uppercase font-bold">
+              Prazos Críticos
+            </p>
+            <p className="text-2xl font-bold text-gray-900">3</p>
           </div>
         </div>
-        <div className="divide-y">
-          {REQUESTS.filter((r) => r.status === "Pendente")
-            .slice(0, 3)
-            .map((req) => (
-              <div
-                key={req.id}
-                className="p-4 flex justify-between items-center"
-              >
-                <span>
-                  {req.student} - {req.activity}
-                </span>
-                <Badge status={req.status} />
-              </div>
-            ))}
+
+        {/* NEW: Communication Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <Mail size={20} />
+            Comunicação
+          </h3>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => setShowMassNotification(true)}
+              icon={Mail}
+              variant="secondary"
+            >
+              Enviar Comunicado em Massa
+            </Button>
+            <div className="text-sm text-gray-600 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">
+                RF044
+              </span>
+              Comunicar todos os discentes ou segmentos específicos
+            </div>
+          </div>
         </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
+            <h3 className="font-bold text-gray-800">
+              Fila de Análise de Solicitações (RF021)
+            </h3>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSubView("validation")}
+              >
+                Ver Central de Validações
+              </Button>
+            </div>
+          </div>
+          <div className="divide-y">
+            {REQUESTS.filter((r) => r.status === "Pendente")
+              .slice(0, 3)
+              .map((req) => (
+                <div
+                  key={req.id}
+                  className="p-4 flex justify-between items-center"
+                >
+                  <span>
+                    {req.student} - {req.activity}
+                  </span>
+                  <Badge status={req.status} />
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* Modal */}
+        {showMassNotification && (
+          <MassNotificationModal
+            onClose={() => setShowMassNotification(false)}
+            userRole="coord_uce"
+          />
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   // Docente View (Anselmo)
   const DocenteView = () => (
@@ -4373,61 +4872,15 @@ const App = () => {
     );
 
   if (view === "login") {
-    // Login Mockado
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="bg-white p-8 rounded-xl shadow-xl max-w-md w-full animate-in zoom-in">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-red-800 rounded-lg flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-              <img
-                src="/src/assets/PNG - Logo UFMA colorido.png"
-                alt="Logo UFMA"
-                className="h-12 w-auto object-contain"
-              />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Acesso ao Sistema
-            </h2>
-            <p className="text-gray-500">Selecione uma persona para testar</p>
-          </div>
-          <div className="space-y-3">
-            {Object.values(USERS).map((u) => (
-              <button
-                key={u.id}
-                onClick={() => handleLogin(u)}
-                className="w-full p-3 border rounded-lg hover:bg-blue-50 text-left flex items-center gap-3 transition-colors"
-              >
-                <div
-                  className={`p-2 rounded-full ${
-                    u.role === "discente"
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {u.role === "discente" ? (
-                    <User size={18} />
-                  ) : (
-                    <BookOpen size={18} />
-                  )}
-                </div>
-                <div>
-                  <p className="font-bold text-sm text-gray-800">{u.name}</p>
-                  <p className="text-xs text-gray-500 capitalize">
-                    {u.role.replace("_", " ")}
-                  </p>
-                </div>
-              </button>
-            ))}
-          </div>
-          <Button
-            variant="ghost"
-            onClick={() => setView("landing")}
-            className="w-full mt-6"
-          >
-            Voltar
-          </Button>
-        </div>
-      </div>
+      <LoginScreen
+        onCancel={() => setView("landing")}
+        onSuccess={(selectedUser) => {
+          setUser(selectedUser);
+          setView("dashboard");
+          setSubView("dashboard");
+        }}
+      />
     );
   }
 
