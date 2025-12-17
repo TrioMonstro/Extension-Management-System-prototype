@@ -2653,47 +2653,6 @@ const OpportunitiesPage = () => {
         ))}
       </div>
 
-      {/* FAQ Section */}
-      <div id="faq" className="bg-white py-16 border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-4">
-          <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Perguntas Frequentes
-          </h3>
-          <div className="space-y-6">
-            {[
-              {
-                q: "Como valido meu certificado?",
-                a: "Utilize o código QR presente no documento ou insira o código alfanumérico na seção 'Validar Certificado' desta página.",
-              },
-              {
-                q: "Quem pode participar das atividades?",
-                a: "A maioria das atividades é aberta aos discentes da UFMA, mas muitas também aceitam membros da comunidade externa. Verifique os requisitos de cada edital.",
-              },
-              {
-                q: "Como solicitar horas complementares?",
-                a: "Faça login no portal do discente, acesse a opção 'Solicitar Horas' no menu principal e anexe seus certificados digitalizados.",
-              },
-              {
-                q: "Qual o prazo para análise?",
-                a: "Os coordenadores têm um prazo médio de 15 dias para analisar e deferir as solicitações de carga horária.",
-              },
-            ].map((faq, i) => (
-              <div
-                key={i}
-                className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow"
-              >
-                <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                  <span className="text-blue-600">?</span> {faq.q}
-                </h4>
-                <p className="text-gray-600 leading-relaxed text-sm ml-5">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {selectedOpp && (
         <Modal
           isOpen={!!selectedOpp}
@@ -2800,7 +2759,7 @@ const OpportunitiesPage = () => {
 };
 
 // 7. MINHAS SOLICITAÇÕES (RF024, RF023)
-const RequestsPage = () => {
+const RequestsPage = ({ setActiveModal }) => {
   const [activeTab, setActiveTab] = useState("Todas");
   const [selectedReq, setSelectedReq] = useState(null);
   const [resubmitMode, setResubmitMode] = useState(false);
@@ -2818,7 +2777,12 @@ const RequestsPage = () => {
         <h2 className="text-2xl font-bold text-gray-800">
           Minhas Solicitações
         </h2>
-        <Button icon={PlusCircle}>Nova Solicitação</Button>
+        <Button
+          icon={PlusCircle}
+          onClick={() => setActiveModal("requestHours")}
+        >
+          Nova Solicitação
+        </Button>
       </div>
 
       <div className="flex gap-2 border-b">
@@ -3140,8 +3104,8 @@ const MassNotificationModal = ({ onClose, userRole }) => {
       <div className="space-y-6">
         {/* RF044 Info */}
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-800">
-          <strong>RF044:</strong> Esta funcionalidade enviará um comunicado
-          geral para todos os usuários ativos no sistema.
+          <strong>Info:</strong> Esta funcionalidade enviará um comunicado geral
+          para todos os usuários ativos no sistema.
         </div>
 
         {/* Title */}
@@ -3741,7 +3705,7 @@ const App = () => {
             </p>
             {/* NEW: Explanatory notice */}
             <div className="mt-3 bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-800">
-              <strong>ℹ️ RF0005:</strong> Este relatório é para{" "}
+              <strong>ℹ️ Info:</strong> Este relatório é para{" "}
               <strong>consulta e geração de documentação</strong>. O lançamento
               no SIGAA é feito pela{" "}
               <strong>Coordenação de Extensão (UCE)</strong>.
@@ -3898,9 +3862,6 @@ const App = () => {
               Enviar Comunicado em Massa
             </Button>
             <div className="text-sm text-gray-600 flex items-center gap-2">
-              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">
-                RF044
-              </span>
               Comunicar todos os discentes ou segmentos específicos
             </div>
           </div>
@@ -3909,7 +3870,7 @@ const App = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
             <h3 className="font-bold text-gray-800">
-              Fila de Análise de Solicitações (RF021)
+              Fila de Análise de Solicitações
             </h3>
             <div className="flex gap-2">
               <Button
@@ -4443,7 +4404,7 @@ const App = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-6">
                 <h3 className="font-bold text-gray-800 mb-4">
-                  Minhas Iniciativas (RF012)
+                  Minhas Iniciativas
                 </h3>
                 <div className="space-y-4">
                   {OPPORTUNITIES.filter((o) => o.author === "DACOMP").map(
@@ -4641,9 +4602,7 @@ const App = () => {
       </Card>
 
       <Card className="p-6">
-        <h3 className="font-bold text-gray-800 mb-4">
-          Comunicados em Massa (RF044)
-        </h3>
+        <h3 className="font-bold text-gray-800 mb-4">Comunicados em Massa</h3>
         <textarea
           className="w-full border p-3 rounded-md mb-3 text-sm"
           rows="3"
@@ -4891,7 +4850,9 @@ const App = () => {
           <DiscenteView setSubView={setSubView} />
         )}
         {subView === "opportunities" && <OpportunitiesPage />}
-        {subView === "requests" && <RequestsPage />}
+        {subView === "requests" && (
+          <RequestsPage setActiveModal={setActiveModal} />
+        )}
         {subView === "gallery" && <CertificatesGalleryPage />}
         {/* Outras roles mantêm a view padrão por enquanto */}
         {(subView === "dashboard" || !["discente"].includes(user.role)) && (
