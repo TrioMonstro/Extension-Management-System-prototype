@@ -880,10 +880,7 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
           password: "123456",
           user: USERS.COORD_UCE,
         },
-        "darlan.quintanilha@ufma.br": {
-          password: "123456",
-          user: USERS.COORD_CURSO,
-        },
+
         "lucas.farias@discente.ufma.br": {
           password: "123456",
           user: USERS.DISCENTE_DIRETOR,
@@ -996,13 +993,34 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
             <h2 className="text-2xl font-bold text-gray-900">
               Acesso ao Sistema
             </h2>
-            <p className="text-gray-500 mt-1">
-              Sistema de Extensão Universitária
-            </p>
           </div>
 
           {/* Formulário */}
           <form onSubmit={handleLogin} className="space-y-4">
+            {/* Quick Fill for Testing */}
+            <div className="bg-blue-50 p-1 rounded-lg border border-blue-100 mb-4">
+              <select
+                className="w-full text-sm border-blue-200 rounded text-blue-900 focus:ring-blue-500 p-2"
+                onChange={(e) => {
+                  const [email, pwd] = e.target.value.split(":");
+                  if (email) setCredentials({ email, password: pwd });
+                }}
+              >
+                <option value="">Selecione um perfil para testar...</option>
+                <option value="talyson.r@discente.ufma.br:123456">
+                  Discente (Talyson)
+                </option>
+                <option value="anselmo.paiva@ufma.br:123456">
+                  Docente (Anselmo)
+                </option>
+                <option value="alexandre.cesar@ufma.br:123456">
+                  Coord. UCE (Alexandre)
+                </option>
+                <option value="lucas.farias@discente.ufma.br:123456">
+                  Discente Diretor (Lucas)
+                </option>
+              </select>
+            </div>
             <Input
               label="E-mail Institucional"
               type="email"
@@ -1030,7 +1048,7 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-sm text-blue-600 hover:underline mt-1"
+                className="text-sm text-blue-600 hover:underline"
               >
                 Esqueci minha senha
               </button>
@@ -1053,7 +1071,7 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
           </form>
 
           {/* Divisor */}
-          <div className="relative my-6">
+          <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
             </div>
@@ -1083,33 +1101,6 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
               </button>
             </p>
           </div>
-
-          {/* Informações de Teste - Compacto */}
-          <details className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs group">
-            <summary className="text-blue-800 font-semibold cursor-pointer select-none list-none flex justify-between items-center outline-none">
-              <span>🧪 Ver Credenciais de Teste</span>
-              <span className="text-blue-400 group-open:rotate-180 transition-transform">
-                ▼
-              </span>
-            </summary>
-            <div className="mt-2 pt-2 border-t border-blue-200 text-blue-700 space-y-1">
-              <p>
-                • <strong>Discente:</strong> talyson.r@discente.ufma.br
-              </p>
-              <p>
-                • <strong>Docente:</strong> anselmo.paiva@ufma.br
-              </p>
-              <p>
-                • <strong>Coord UCE:</strong> alexandre.cesar@ufma.br
-              </p>
-              <p>
-                • <strong>Coord Curso:</strong> darlan.quintanilha@ufma.br
-              </p>
-              <p className="mt-1 border-t border-blue-200 pt-1 text-[10px] text-blue-500">
-                Senha padrão para todos: <strong>123456</strong>
-              </p>
-            </div>
-          </details>
         </div>
       </div>
     </div>
@@ -2264,22 +2255,22 @@ const LandingPage = ({ onLogin, onRegister }) => {
             <button
               onClick={() =>
                 document
-                  .getElementById("faq")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="text-sm font-semibold hover:text-accent-gold transition-colors"
-            >
-              Perguntas Frequentes
-            </button>
-            <button
-              onClick={() =>
-                document
                   .getElementById("validar")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
               className="text-sm font-semibold hover:text-accent-gold transition-colors"
             >
               Validar Certificado
+            </button>
+            <button
+              onClick={() =>
+                document
+                  .getElementById("faq")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="text-sm font-semibold hover:text-accent-gold transition-colors"
+            >
+              Perguntas Frequentes
             </button>
             <button
               onClick={onLogin}
@@ -2456,7 +2447,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
       </div>
 
       {/* FAQ e Footer (RF045, RF046) */}
-      <div className="bg-white border-t py-16">
+      <div id="faq" className="bg-white border-t py-16">
         <div className="max-w-4xl mx-auto px-4">
           <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
             Perguntas Frequentes
@@ -3826,61 +3817,101 @@ const App = () => {
     );
   };
 
-  // Coord UCE View (Alexandre) - Foco em Análise
+  // Coord UCE View (Merged with Institutional View)
   const CoordUCEView = ({ setSubView }) => {
     const [showMassNotification, setShowMassNotification] = useState(false);
 
     return (
       <div className="space-y-6 animate-in fade-in">
-        <div className="grid md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
-            <p className="text-xs text-gray-500 uppercase font-bold">
-              Pendentes
-            </p>
-            <p className="text-2xl font-bold text-gray-900">12</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-red-500">
-            <p className="text-xs text-gray-500 uppercase font-bold">
-              Prazos Críticos
-            </p>
-            <p className="text-2xl font-bold text-gray-900">3</p>
-          </div>
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Visão Institucional - Extensão
+          </h2>
         </div>
 
-        {/* NEW: Communication Section */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Mail size={20} />
-            Comunicação
-          </h3>
-          <div className="flex gap-3">
-            <Button
-              onClick={() => setShowMassNotification(true)}
-              icon={Mail}
-              variant="secondary"
-            >
-              Enviar Comunicado em Massa
-            </Button>
-            <div className="text-sm text-gray-600 flex items-center gap-2">
-              Comunicar todos os discentes ou segmentos específicos
+        {/* Stats Grid */}
+        <div className="grid md:grid-cols-4 gap-4">
+          <Card className="p-4 bg-white border-l-4 border-blue-800">
+            <p className="text-xs text-gray-500 uppercase">
+              Total de Horas (Semestre)
+            </p>
+            <p className="text-2xl font-bold">12.450h</p>
+          </Card>
+          <Card className="p-4 bg-white border-l-4 border-green-600">
+            <p className="text-xs text-gray-500 uppercase">
+              Concluintes Extensão
+            </p>
+            <p className="text-2xl font-bold">24 Alunos</p>
+          </Card>
+          <Card className="p-4 bg-white border-l-4 border-yellow-500">
+            <p className="text-xs text-gray-500 uppercase">
+              Pendentes de Análise
+            </p>
+            <p className="text-2xl font-bold text-gray-900">12</p>
+          </Card>
+          <Card className="p-4 bg-white border-l-4 border-red-500">
+            <p className="text-xs text-gray-500 uppercase">Prazos Críticos</p>
+            <p className="text-2xl font-bold text-gray-900">3</p>
+          </Card>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Communication */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Mail size={20} /> Comunicação
+            </h3>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-600 mb-2">
+                Enviar comunicados importantes para discentes.
+              </p>
+              <Button
+                onClick={() => setShowMassNotification(true)}
+                icon={Mail}
+                variant="secondary"
+              >
+                Enviar Comunicado em Massa
+              </Button>
+            </div>
+          </div>
+
+          {/* Conclusion Report Summary */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-gray-800">
+                Relatório de Conclusão
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSubView("conclusion")}
+              >
+                Ver Completo
+              </Button>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              24 alunos aptos para lançamento no SIGAA.
+            </p>
+            <div className="flex items-center gap-2 text-green-700 bg-green-50 p-3 rounded">
+              <CheckCircle size={16} /> <strong>Status:</strong> Relatório
+              disponível
             </div>
           </div>
         </div>
 
+        {/* Analysis Queue */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <div className="p-6 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
             <h3 className="font-bold text-gray-800">
               Fila de Análise de Solicitações
             </h3>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSubView("validation")}
-              >
-                Ver Central de Validações
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSubView("validation")}
+            >
+              Ver Central de Validações
+            </Button>
           </div>
           <div className="divide-y">
             {REQUESTS.filter((r) => r.status === "Pendente")
@@ -3888,12 +3919,25 @@ const App = () => {
               .map((req) => (
                 <div
                   key={req.id}
-                  className="p-4 flex justify-between items-center"
+                  className="p-4 flex justify-between items-center hover:bg-gray-50"
                 >
-                  <span>
-                    {req.student} - {req.activity}
-                  </span>
-                  <Badge status={req.status} />
+                  <div className="flex items-center gap-3">
+                    <FileText size={16} className="text-gray-400" />
+                    <span className="font-medium text-gray-700">
+                      {req.student}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      - {req.activity}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {req.priority === "critical" && (
+                      <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">
+                        URGENTE
+                      </span>
+                    )}
+                    <Badge status={req.status} />
+                  </div>
                 </div>
               ))}
           </div>
@@ -4524,97 +4568,6 @@ const App = () => {
     );
   };
 
-  // Coordenador Curso Dashboard (Darlan)
-  const CoordCursoDashboard = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">
-        Visão Institucional - Ciência da Computação
-      </h2>
-
-      <div className="grid md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-white border-l-4 border-blue-800">
-          <p className="text-xs text-gray-500 uppercase">
-            Total de Horas (Semestre)
-          </p>
-          <p className="text-2xl font-bold">12.450h</p>
-        </Card>
-        <Card className="p-4 bg-white border-l-4 border-green-600">
-          <p className="text-xs text-gray-500 uppercase">
-            Concluintes Extensão
-          </p>
-          <p className="text-2xl font-bold">24 Alunos</p>
-        </Card>
-        <Card className="p-4 bg-white border-l-4 border-red-600">
-          <p className="text-xs text-gray-500 uppercase">Situação Crítica</p>
-          <p className="text-2xl font-bold">15 Alunos</p>
-        </Card>
-        <Card className="p-4 bg-white border-l-4 border-purple-600">
-          <p className="text-xs text-gray-500 uppercase">Ações Ativas</p>
-          <p className="text-2xl font-bold">8 Projetos</p>
-        </Card>
-      </div>
-
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-bold text-gray-800">
-            Relatório de Conclusão (UCE)
-          </h3>
-          <Button variant="outline" icon={Download}>
-            Exportar PDF
-          </Button>
-        </div>
-        <p className="text-sm text-gray-600 mb-4">
-          Lista de alunos aptos para lançamento de carga horária no SIGAA.
-        </p>
-
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100 font-semibold text-gray-700">
-            <tr>
-              <th className="px-4 py-2 text-left">Matrícula</th>
-              <th className="px-4 py-2 text-left">Nome</th>
-              <th className="px-4 py-2 text-center">Total Horas</th>
-              <th className="px-4 py-2 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            <tr>
-              <td className="px-4 py-3">2020001234</td>
-              <td className="px-4 py-3">Lucas Farias</td>
-              <td className="px-4 py-3 text-center">345h</td>
-              <td className="px-4 py-3 text-center">
-                <span className="text-green-600 font-bold bg-green-50 px-2 py-1 rounded">
-                  Apto
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td className="px-4 py-3">2020005678</td>
-              <td className="px-4 py-3">Mariana Costa</td>
-              <td className="px-4 py-3 text-center">350h</td>
-              <td className="px-4 py-3 text-center">
-                <span className="text-green-600 font-bold bg-green-50 px-2 py-1 rounded">
-                  Apto
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </Card>
-
-      <Card className="p-6">
-        <h3 className="font-bold text-gray-800 mb-4">Comunicados em Massa</h3>
-        <textarea
-          className="w-full border p-3 rounded-md mb-3 text-sm"
-          rows="3"
-          placeholder="Escreva um comunicado para todos os alunos com pendência..."
-        ></textarea>
-        <div className="flex justify-end">
-          <Button variant="primary">Enviar Comunicado</Button>
-        </div>
-      </Card>
-    </div>
-  );
-
   // Layout do Dashboard
   const DashboardLayout = ({ children, setSubView, currentView }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -4703,40 +4656,36 @@ const App = () => {
                   </Button>
                 </>
               )}
-              {user.role.includes("coord") && (
+              {user.role === "coord_uce" && (
                 <>
-                  {user.role === "coord_uce" && (
-                    <Button
-                      variant={
-                        currentView === "validation" ? "secondary" : "ghost"
-                      }
-                      className={`w-full justify-start ${
-                        currentView === "validation"
-                          ? "bg-blue-800 text-white sidebar-active"
-                          : "text-white/90 hover:bg-blue-800 hover:text-white"
-                      }`}
-                      icon={CheckCircle}
-                      onClick={() => setSubView("validation")}
-                    >
-                      Validações (UCE)
-                    </Button>
-                  )}
-                  {user.role === "coord_curso" && (
-                    <Button
-                      variant={
-                        currentView === "conclusion" ? "secondary" : "ghost"
-                      }
-                      className={`w-full justify-start ${
-                        currentView === "conclusion"
-                          ? "bg-blue-800 text-white sidebar-active"
-                          : "text-white/90 hover:bg-blue-800 hover:text-white"
-                      }`}
-                      icon={Award}
-                      onClick={() => setSubView("conclusion")}
-                    >
-                      Relatórios de Conclusão
-                    </Button>
-                  )}
+                  <Button
+                    variant={
+                      currentView === "validation" ? "secondary" : "ghost"
+                    }
+                    className={`w-full justify-start ${
+                      currentView === "validation"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
+                    }`}
+                    icon={CheckCircle}
+                    onClick={() => setSubView("validation")}
+                  >
+                    Validações (UCE)
+                  </Button>
+                  <Button
+                    variant={
+                      currentView === "conclusion" ? "secondary" : "ghost"
+                    }
+                    className={`w-full justify-start ${
+                      currentView === "conclusion"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
+                    }`}
+                    icon={FileText}
+                    onClick={() => setSubView("conclusion")}
+                  >
+                    Relatórios de Conclusão
+                  </Button>
                 </>
               )}
             </nav>
@@ -4855,27 +4804,19 @@ const App = () => {
         )}
         {subView === "gallery" && <CertificatesGalleryPage />}
         {/* Outras roles mantêm a view padrão por enquanto */}
-        {(subView === "dashboard" || !["discente"].includes(user.role)) && (
-          <>
-            {user.role === "coord_uce" && subView === "dashboard" && (
-              <CoordUCEView setSubView={setSubView} />
-            )}
-            {user.role === "coord_uce" && subView === "validation" && (
-              <ValidationPage onAnalyze={openAnalysis} />
-            )}
-
-            {user.role === "docente" && <DocenteView />}
-
-            {user.role === "coord_curso" && subView === "dashboard" && (
-              <CoordCursoDashboard />
-            )}
-            {user.role === "coord_curso" && subView === "conclusion" && (
-              <ConclusionReportPage />
-            )}
-
-            {user.role === "discente_diretor" && <DiscenteDiretorDashboard />}
-          </>
+        {user.role === "coord_uce" && subView === "dashboard" && (
+          <CoordUCEView setSubView={setSubView} />
         )}
+        {user.role === "coord_uce" && subView === "validation" && (
+          <ValidationPage onAnalyze={openAnalysis} />
+        )}
+        {user.role === "coord_uce" && subView === "conclusion" && (
+          <ConclusionReportPage />
+        )}
+
+        {user.role === "docente" && <DocenteView />}
+
+        {user.role === "discente_diretor" && <DiscenteDiretorDashboard />}
         {/* MODAIS GLOBAIS */}
         {activeModal === "createOpp" && (
           <CreateOppWizard onClose={() => setActiveModal(null)} />
