@@ -19,6 +19,8 @@ import {
   Users,
   Award,
   ShieldCheck,
+  Briefcase,
+  AlertCircle,
   Eye,
   PlusCircle,
   Clock,
@@ -3964,6 +3966,62 @@ const App = () => {
         </Button>
       </div>
 
+      {/* Aprovações Pendentes (Docente) */}
+      <div className="bg-white rounded-xl shadow-sm border border-orange-200 overflow-hidden">
+        <div className="p-6 border-b bg-orange-50">
+          <h3 className="font-bold text-orange-900 flex items-center gap-2">
+            <AlertCircle size={20} /> Iniciativas Estudantis Pendentes
+          </h3>
+        </div>
+        <div className="divide-y">
+          {OPPORTUNITIES.filter(
+            (o) =>
+              o.docentName === user.name && o.status === "Aguardando Aprovação"
+          ).length === 0 ? (
+            <div className="p-6 text-gray-500 text-sm text-center">
+              Nenhuma iniciativa pendente de aprovação.
+            </div>
+          ) : (
+            OPPORTUNITIES.filter(
+              (o) =>
+                o.docentName === user.name &&
+                o.status === "Aguardando Aprovação"
+            ).map((op) => (
+              <div
+                key={op.id}
+                className="p-4 flex justify-between items-center hover:bg-orange-50/50"
+              >
+                <div>
+                  <p className="font-bold text-gray-800">{op.title}</p>
+                  <p className="text-sm text-gray-600">
+                    Proposto por: {op.authorName}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Submetido em: {op.submitDate}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedOpportunity(op)}
+                  >
+                    Ver Detalhes
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => alert("Aprovado! (Simulação)")}
+                  >
+                    Aprovar
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
       {/* Meus Projetos */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-6 border-b bg-gray-50">
@@ -4568,6 +4626,73 @@ const App = () => {
     );
   };
 
+  // Discente Diretor Management View
+  const DirectorManagementView = () => (
+    <div className="space-y-6 animate-in fade-in">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Gestão {user.entity}
+          </h2>
+          <p className="text-gray-500">
+            Gerencie as iniciativas criadas pela sua entidade estudantil.
+          </p>
+        </div>
+        <Button
+          icon={PlusCircle}
+          onClick={() => setActiveModal("createStudentOpp")}
+        >
+          Nova Iniciativa
+        </Button>
+      </div>
+
+      {/* Meus Projetos (Diretor) */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="p-6 border-b bg-gray-50">
+          <h3 className="font-bold text-gray-800">Iniciativas Publicadas</h3>
+        </div>
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-100 text-gray-600 border-b">
+            <tr>
+              <th className="px-6 py-3">Título</th>
+              <th className="px-6 py-3">Status</th>
+              <th className="px-6 py-3">Inscritos</th>
+              <th className="px-6 py-3 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {OPPORTUNITIES.filter(
+              (o) => o.author === user.entity || o.authorName === user.name
+            ).map((op) => (
+              <tr key={op.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium">{op.title}</td>
+                <td className="px-6 py-4">
+                  <Badge status={op.status} />
+                </td>
+                <td className="px-6 py-4">
+                  {op.filled}/{op.vacancies}
+                </td>
+                <td className="px-6 py-4 text-right flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={Users}
+                    onClick={() => {
+                      setSelectedOpportunity(op);
+                      setActiveModal("manageCandidates");
+                    }}
+                  >
+                    Gerenciar
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   // Layout do Dashboard
   const DashboardLayout = ({ children, setSubView, currentView }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -4614,7 +4739,7 @@ const App = () => {
               >
                 Dashboard
               </Button>
-              {user.role === "discente" && (
+              {["discente", "discente_diretor"].includes(user.role) && (
                 <>
                   <Button
                     variant={
@@ -4654,6 +4779,29 @@ const App = () => {
                   >
                     Certificados
                   </Button>
+                  {user.role === "discente_diretor" && (
+                    <div className="pt-2 mt-2 border-t border-blue-700">
+                      <p className="px-4 text-[10px] uppercase text-blue-300 font-bold mb-1">
+                        Diretoria {user.entity}
+                      </p>
+                      <Button
+                        variant={
+                          currentView === "director_management"
+                            ? "secondary"
+                            : "ghost"
+                        }
+                        className={`w-full justify-start ${
+                          currentView === "director_management"
+                            ? "bg-blue-800 text-white sidebar-active"
+                            : "text-white/90 hover:bg-blue-800 hover:text-white"
+                        }`}
+                        icon={Briefcase}
+                        onClick={() => setSubView("director_management")}
+                      >
+                        Gestão de Extensão
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
               {user.role === "coord_uce" && (
@@ -4816,7 +4964,11 @@ const App = () => {
 
         {user.role === "docente" && <DocenteView />}
 
-        {user.role === "discente_diretor" && <DiscenteDiretorDashboard />}
+        {user.role === "discente_diretor" && subView === "dashboard" && (
+          <DiscenteDiretorDashboard />
+        )}
+        {user.role === "discente_diretor" &&
+          subView === "director_management" && <DirectorManagementView />}
         {/* MODAIS GLOBAIS */}
         {activeModal === "createOpp" && (
           <CreateOppWizard onClose={() => setActiveModal(null)} />
