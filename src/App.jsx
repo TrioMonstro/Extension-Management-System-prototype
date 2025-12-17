@@ -117,6 +117,49 @@ const USERS = {
   },
 };
 
+const GROUPS = [
+  {
+    id: 1,
+    name: "DACOMP - Diretório Acadêmico",
+    type: "Diretório Acadêmico",
+    description: "Representação estudantil do curso de Ciência da Computação.",
+    email: "dacomp@ufma.br",
+    docentId: 1,
+    docentName: "Prof. Dr. Anselmo Paiva",
+    status: "Ativo",
+    members: [
+      {
+        userId: 5,
+        name: "Lucas Farias",
+        role: "Diretor",
+        joinedAt: "10/01/2024",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Liga de Inteligência Artificial",
+    type: "Liga Acadêmica",
+    description: "Grupo de estudos e projetos em IA e Machine Learning.",
+    email: "lia@ufma.br",
+    docentId: 2,
+    docentName: "Prof. Darlan Quintanilha",
+    status: "Ativo",
+    members: [],
+  },
+  {
+    id: 3,
+    name: "Atlética Computação",
+    type: "Atlética",
+    description: "Promovendo esporte e integração.",
+    email: "atletica@ufma.br",
+    docentId: 1,
+    docentName: "Prof. Dr. Anselmo Paiva",
+    status: "Inativo",
+    members: [],
+  },
+];
+
 const OPPORTUNITIES = [
   {
     id: 101,
@@ -2307,8 +2350,8 @@ const LandingPage = ({ onLogin, onRegister }) => {
             <span className="text-accent-gold">UFMA</span>
           </h2>
           <p className="text-lg text-blue-100 max-w-2xl mx-auto mb-10">
-            A plataforma para gerenciar carga horária, emitir certificados
-            Plataforma e ter controle das atividades.
+            A plataforma para gerenciar carga horária, emitir certificados e ter
+            controle das atividades.
           </p>
           <div className="flex justify-center gap-4">
             <button
@@ -3185,14 +3228,18 @@ const MassNotificationModal = ({ onClose, userRole }) => {
 // --- COMPONENTE PRINCIPAL DO APP ---
 
 const App = () => {
-  const [view, setView] = useState("landing"); // landing, login, register, dashboard
-  const [subView, setSubView] = useState("dashboard"); // dashboard, opportunities, requests, gallery
+  /* --- ESTADOS GLOBAIS --- */
+  const [view, setView] = useState("landing"); // landing, register, login, dashboard
+  const [subView, setSubView] = useState("dashboard"); // dashboard, validation, conclusion, etc
   const [user, setUser] = useState(null);
-  const [activeModal, setActiveModal] = useState(null); // 'createOpp', 'requestHours', 'analyze', 'enroll'
+  const [activeModal, setActiveModal] = useState(null);
 
+  // Selection States
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
+  const [notifOpen, setNotifOpen] = useState(false);
   // Handlers
   // handleLogin removed - now done via LoginScreen component
 
@@ -3819,6 +3866,93 @@ const App = () => {
     );
   };
 
+  // Coord UCE Groups Management View
+  const CoordUCEGroupsView = () => {
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Gerenciamento de Grupos
+            </h2>
+            <p className="text-gray-500">
+              Gerencie diretórios, ligas e atléticas.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              icon={PlusCircle}
+              onClick={() => setActiveModal("createGroup")}
+            >
+              Criar Novo Grupo
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {GROUPS.map((group) => (
+            <div
+              key={group.id}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <div
+                    className={`p-3 rounded-lg ${
+                      group.type === "Diretório Acadêmico"
+                        ? "bg-blue-100 text-blue-600"
+                        : "bg-purple-100 text-purple-600"
+                    }`}
+                  >
+                    <Users size={24} />
+                  </div>
+                  <Badge status={group.status} />
+                </div>
+                <h3 className="font-bold text-lg text-gray-900 mb-1">
+                  {group.name}
+                </h3>
+                <p className="text-xs text-gray-500 mb-4">{group.type}</p>
+                <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                  {group.description}
+                </p>
+
+                <div className="text-sm text-gray-500 space-y-1 mb-6">
+                  <div className="flex items-center gap-2">
+                    <Mail size={14} /> {group.email}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <User size={14} /> Resp:{" "}
+                    {group.docentName.split(" ").slice(0, 2).join(" ")}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users size={14} /> {group.members.length} membros
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    setSelectedGroup(group);
+                    setActiveModal("manageGroup");
+                  }}
+                >
+                  Gerenciar
+                </Button>
+                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded">
+                  <MoreVertical size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Coord UCE View (Merged with Institutional View)
   const CoordUCEView = ({ setSubView }) => {
     const [showMassNotification, setShowMassNotification] = useState(false);
@@ -3899,6 +4033,35 @@ const App = () => {
               disponível
             </div>
           </div>
+
+          {/* Grupos Estudantis (New) */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Users size={20} /> Grupos Estudantis
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSubView("groups")}
+              >
+                Gerenciar
+              </Button>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">
+              {GROUPS.filter((g) => g.status === "Ativo").length} grupos ativos.
+            </p>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={() => setSubView("groups")}
+              >
+                Ver Grupos
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Analysis Queue */}
@@ -3956,7 +4119,7 @@ const App = () => {
     );
   };
 
-  // Docente View (Anselmo)
+  // Docente View (Anselmo) - Original
   const DocenteView = () => (
     <div className="space-y-6 animate-in fade-in">
       <div className="flex justify-between items-center">
@@ -4081,6 +4244,62 @@ const App = () => {
       </div>
     </div>
   );
+
+  // Docente Groups View (Meus Grupos)
+  const DocenteGroupsView = () => {
+    const myGroups = GROUPS.filter((g) => g.docentId === user.id);
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Meus Grupos Responsáveis
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {myGroups.length === 0 ? (
+            <p className="text-gray-500">
+              Você não é responsável por nenhum grupo.
+            </p>
+          ) : (
+            myGroups.map((group) => (
+              <div
+                key={group.id}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-orange-100 text-orange-600">
+                      <Users size={20} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">{group.name}</h3>
+                      <p className="text-xs text-gray-500">{group.type}</p>
+                    </div>
+                  </div>
+                  <Badge status={group.status} />
+                </div>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  {group.description}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedGroup(group);
+                      setActiveModal("manageGroup");
+                    }}
+                  >
+                    Gerenciar Grupo
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
 
   // --- 12. CRIAÇÃO DE INICIATIVA ESTUDANTIL (DISCENTE DIRETOR) - RF0002 ---
 
@@ -4626,6 +4845,465 @@ const App = () => {
     );
   };
 
+  // Discente Groups View
+  const StudentGroupsView = () => {
+    // Apenas Diretores veem seus grupos
+    const myGroups = GROUPS.filter((g) =>
+      g.members.some((m) => m.userId === user.id && m.role === "Diretor")
+    );
+
+    return (
+      <div className="space-y-6 animate-in fade-in">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">
+            Meus Grupos Estudantis
+          </h2>
+        </div>
+
+        {/* My Active Groups */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {myGroups.map((group) => (
+            <div
+              key={group.id}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`p-2 rounded-lg ${
+                      group.type === "Diretório Acadêmico"
+                        ? "bg-blue-100 text-blue-600"
+                        : "bg-purple-100 text-purple-600"
+                    }`}
+                  >
+                    <Users size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900">{group.name}</h3>
+                    <p className="text-xs text-gray-500">{group.type}</p>
+                  </div>
+                </div>
+                <Badge status={group.status} />
+              </div>
+
+              <div className="mb-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Meu Cargo
+                </span>
+                <p className="font-semibold text-blue-700 bg-blue-50 inline-block px-2 py-1 rounded text-sm mt-1">
+                  {group.members.find((m) => m.userId === user.id)?.role}
+                </p>
+              </div>
+
+              <div className="text-sm text-gray-600 mb-6 space-y-1">
+                <p>
+                  <strong>Orientador:</strong> {group.docentName}
+                </p>
+                <p>
+                  <strong>Membros:</strong> {group.members.length}
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    setSelectedGroup(group);
+                    setActiveModal("manageGroup");
+                  }}
+                >
+                  Ver Detalhes
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {}}
+                >
+                  Oportunidades
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {myGroups.length === 0 && (
+          <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
+            <Users size={48} className="mx-auto text-gray-300 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900">
+              Você não participa de nenhum grupo
+            </h3>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // 1.2 MODAL: Criar Novo Grupo (Wizard)
+  const CreateGroupWizard = ({ onClose }) => {
+    const [step, setStep] = useState(1);
+    const [formData, setFormData] = useState({
+      name: "",
+      type: "Diretório Acadêmico",
+      description: "",
+      email: "",
+      docentId: null,
+      members: [],
+    });
+
+    const handleNext = () => setStep(step + 1);
+    const handleBack = () => setStep(step - 1);
+    const handleSubmit = () => {
+      // Mock creation logic
+      const newGroup = {
+        id: GROUPS.length + 1,
+        ...formData,
+        status: "Ativo",
+        docentName:
+          AVAILABLE_DOCENTS.find((d) => d.id === parseInt(formData.docentId))
+            ?.name || "Docente",
+        members: formData.members, // Use members from form data
+        history: [],
+      };
+      GROUPS.push(newGroup);
+      alert("Grupo criado com sucesso!");
+      onClose();
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 animate-in zoom-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800">
+              Criar Novo Grupo Estudantil
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Steps Indicator */}
+          <div className="flex gap-2 mb-8">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className={`h-2 flex-1 rounded-full ${
+                  step >= i ? "bg-blue-600" : "bg-gray-200"
+                }`}
+              />
+            ))}
+          </div>
+
+          {step === 1 && (
+            <div className="space-y-4">
+              <Input
+                label="Nome do Grupo"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                placeholder="Ex: DACOMP"
+              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Grupo
+                </label>
+                <select
+                  className="w-full border rounded-md p-2"
+                  value={formData.type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, type: e.target.value })
+                  }
+                >
+                  <option>Diretório Acadêmico</option>
+                  <option>Liga Acadêmica</option>
+                  <option>Atlética</option>
+                  <option>Extensão</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  className="w-full border rounded-md p-2"
+                  rows="3"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                ></textarea>
+              </div>
+              <Input
+                label="E-mail de Contato"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                type="email"
+              />
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-4">
+              <div className="bg-yellow-50 text-yellow-800 p-3 rounded border border-yellow-200 text-sm flex gap-2">
+                <AlertTriangle size={16} /> <strong>RF006:</strong> Todo grupo
+                deve ter um Docente Responsável vinculado.
+              </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Selecione o Docente Responsável
+              </label>
+              <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-2">
+                {AVAILABLE_DOCENTS.map((docent) => (
+                  <div
+                    key={docent.id}
+                    onClick={() =>
+                      setFormData({ ...formData, docentId: docent.id })
+                    }
+                    className={`p-3 rounded border cursor-pointer hover:bg-gray-50 flex justify-between items-center ${
+                      formData.docentId === docent.id
+                        ? "bg-blue-50 border-blue-500 ring-1 ring-blue-500"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    <div>
+                      <p className="font-bold text-gray-800">{docent.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {docent.department} • {docent.email || "email@ufma.br"}
+                      </p>
+                    </div>
+                    {formData.docentId === docent.id && (
+                      <CheckCircle className="text-blue-600" size={20} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="bg-blue-50 text-blue-800 p-3 rounded border border-blue-200 text-sm">
+                <p>
+                  Selecione o Discente que será o <strong>Diretor</strong> do
+                  grupo.
+                </p>
+              </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Selecione o Diretor
+              </label>
+              <select
+                className="w-full border rounded-md p-2"
+                onChange={(e) => {
+                  const u = USERS.DISCENTE; // Mock simple
+                  // In real app, search list. For prototype, assign mocked User 5 (Lucas) or 1 (Talyson)
+                  setFormData({
+                    ...formData,
+                    members: [
+                      {
+                        userId: 5,
+                        name: "Lucas Farias",
+                        role: "Diretor",
+                        joinedAt: "17/12/2024",
+                      },
+                    ],
+                  });
+                }}
+              >
+                <option value="">Selecione...</option>
+                <option value="5">Lucas Farias (2020001234)</option>
+                <option value="1">Talyson Renan (2021005678)</option>
+              </select>
+            </div>
+          )}
+
+          <div className="flex justify-between mt-8 pt-4 border-t">
+            <Button variant="ghost" onClick={step === 1 ? onClose : handleBack}>
+              {step === 1 ? "Cancelar" : "Voltar"}
+            </Button>
+            <Button onClick={step === 3 ? handleSubmit : handleNext}>
+              {step === 3 ? "Criar Grupo" : "Avançar"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  // 1.3 MODAL: Gerenciar Grupo (Tabs)
+  const ManageGroupModal = ({ group, onClose, currentUser }) => {
+    const [activeTab, setActiveTab] = useState("info");
+
+    if (!group) return null;
+
+    const isDirector = group.members.some(
+      (m) => m.userId === currentUser.id && m.role === "Diretor"
+    );
+    const canEdit = currentUser.role === "coord_uce" || isDirector;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full h-[80vh] flex flex-col animate-in zoom-in">
+          {/* Header */}
+          <div className="p-6 border-b flex justify-between items-start">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                  {group.type}
+                </span>
+                <Badge status={group.status} />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">{group.name}</h2>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex border-b px-6">
+            {["info", "members", "history", "opportunities"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {tab === "info" && "Informações"}
+                {tab === "members" && `Membros (${group.members.length})`}
+                {tab === "history" && "Histórico"}
+                {tab === "opportunities" && "Oportunidades"}
+              </button>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+            {activeTab === "info" && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-xl shadow-sm border">
+                  <h3 className="font-bold text-gray-800 mb-4">
+                    Dados do Grupo
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-500">Descrição</p>
+                      <p className="text-gray-800 mt-1">{group.description}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">E-mail de Contato</p>
+                      <p className="text-gray-800 mt-1">{group.email}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">
+                      Docente Responsável
+                    </p>
+                    <p className="font-bold text-gray-900 text-lg">
+                      {group.docentName}
+                    </p>
+                  </div>
+                  <div className="bg-green-100 text-green-700 p-2 rounded-full">
+                    <CheckCircle size={24} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === "members" && (
+              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+                  <h3 className="font-bold text-gray-800">Membros Ativos</h3>
+                </div>
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-100 text-gray-600 border-b">
+                    <tr>
+                      <th className="px-6 py-3">Nome</th>
+                      <th className="px-6 py-3">Cargo</th>
+                      <th className="px-6 py-3">Entrada</th>
+                      {canEdit && (
+                        <th className="px-6 py-3 text-right">Ações</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {/* Docente */}
+                    <tr className="bg-blue-50/50">
+                      <td className="px-6 py-4 font-medium">
+                        {group.docentName}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                          Docente Responsável
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">-e</td>
+                      {canEdit && <td className="px-6 py-4"></td>}
+                    </tr>
+                    {/* Members */}
+                    {group.members.map((m, idx) => (
+                      <tr key={idx} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 font-medium">{m.name}</td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-bold ${
+                              m.role === "Diretor"
+                                ? "bg-purple-100 text-purple-700"
+                                : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
+                            {m.role}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-500">
+                          {m.joinedAt}
+                        </td>
+                        {canEdit && (
+                          <td className="px-6 py-4 text-right">
+                            {currentUser.role === "coord_uce" && (
+                              <button className="text-blue-600 hover:underline mr-3">
+                                Alterar Diretor
+                              </button>
+                            )}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {activeTab === "history" && (
+              <div className="text-center py-12 text-gray-500">
+                <Clock size={48} className="mx-auto mb-2 opacity-20" />
+                <p>Histórico de alterações em breve.</p>
+              </div>
+            )}
+
+            {activeTab === "opportunities" && (
+              <div className="text-center py-12 text-gray-500">
+                <FileText size={48} className="mx-auto mb-2 opacity-20" />
+                <p>Nenhuma oportunidade criada por este grupo.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Discente Diretor Management View
   const DirectorManagementView = () => (
     <div className="space-y-6 animate-in fade-in">
@@ -4779,6 +5457,20 @@ const App = () => {
                   >
                     Certificados
                   </Button>
+                  <Button
+                    variant={
+                      currentView === "my_groups" ? "secondary" : "ghost"
+                    }
+                    className={`w-full justify-start ${
+                      currentView === "my_groups"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
+                    }`}
+                    icon={Users}
+                    onClick={() => setSubView("my_groups")}
+                  >
+                    Meus Grupos
+                  </Button>
                   {user.role === "discente_diretor" && (
                     <div className="pt-2 mt-2 border-t border-blue-700">
                       <p className="px-4 text-[10px] uppercase text-blue-300 font-bold mb-1">
@@ -4802,6 +5494,25 @@ const App = () => {
                       </Button>
                     </div>
                   )}
+                </>
+              )}
+              {user.role === "docente" && (
+                <>
+                  {/* Docente Meus Grupos */}
+                  <Button
+                    variant={
+                      currentView === "my_groups" ? "secondary" : "ghost"
+                    }
+                    className={`w-full justify-start ${
+                      currentView === "my_groups"
+                        ? "bg-blue-800 text-white sidebar-active"
+                        : "text-white/90 hover:bg-blue-800 hover:text-white"
+                    }`}
+                    icon={Users}
+                    onClick={() => setSubView("my_groups")}
+                  >
+                    Meus Grupos
+                  </Button>
                 </>
               )}
               {user.role === "coord_uce" && (
@@ -4946,6 +5657,10 @@ const App = () => {
         {subView === "dashboard" && user.role === "discente" && (
           <DiscenteView setSubView={setSubView} />
         )}
+        {subView === "my_groups" &&
+          ["discente", "discente_diretor"].includes(user.role) && (
+            <StudentGroupsView />
+          )}
         {subView === "opportunities" && <OpportunitiesPage />}
         {subView === "requests" && (
           <RequestsPage setActiveModal={setActiveModal} />
@@ -4955,6 +5670,9 @@ const App = () => {
         {user.role === "coord_uce" && subView === "dashboard" && (
           <CoordUCEView setSubView={setSubView} />
         )}
+        {user.role === "coord_uce" && subView === "groups" && (
+          <CoordUCEGroupsView setSubView={setSubView} />
+        )}
         {user.role === "coord_uce" && subView === "validation" && (
           <ValidationPage onAnalyze={openAnalysis} />
         )}
@@ -4962,7 +5680,10 @@ const App = () => {
           <ConclusionReportPage />
         )}
 
-        {user.role === "docente" && <DocenteView />}
+        {user.role === "docente" && subView === "dashboard" && <DocenteView />}
+        {user.role === "docente" && subView === "my_groups" && (
+          <DocenteGroupsView />
+        )}
 
         {user.role === "discente_diretor" && subView === "dashboard" && (
           <DiscenteDiretorDashboard />
@@ -4999,6 +5720,19 @@ const App = () => {
           <CreateStudentInitiativeModal
             user={user}
             onClose={() => setActiveModal(null)}
+          />
+        )}
+        {activeModal === "createGroup" && (
+          <CreateGroupWizard onClose={() => setActiveModal(null)} />
+        )}
+        {activeModal === "requestGroup" && (
+          <RequestGroupModal onClose={() => setActiveModal(null)} />
+        )}
+        {activeModal === "manageGroup" && selectedGroup && (
+          <ManageGroupModal
+            group={selectedGroup}
+            onClose={() => setActiveModal(null)}
+            currentUser={user}
           />
         )}
       </DashboardLayout>
