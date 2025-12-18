@@ -36,6 +36,8 @@ import {
   Share2,
 } from "lucide-react";
 
+import logoUFMA from "./assets/PNG - Logo UFMA colorido.png";
+
 /**
  * --- MOCK DATA EXPANDIDO (Nível 2) ---
  */
@@ -1031,7 +1033,7 @@ const LoginScreen = ({ onCancel, onSuccess }) => {
           {/* Logo e Título */}
           <div className="text-center mb-8">
             <img
-              src="/src/assets/PNG - Logo UFMA colorido.png"
+              src={logoUFMA}
               alt="Logo UFMA"
               className="h-16 w-auto mx-auto mb-4 object-contain"
             />
@@ -2273,7 +2275,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
         <div className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center">
           <div className="flex items-center gap-4">
             <img
-              src="/src/assets/PNG - Logo UFMA colorido.png"
+              src={logoUFMA}
               alt="Logo UFMA"
               className="h-12 w-auto object-contain"
             />
