@@ -42,7 +42,7 @@ import logoUFMA from "./assets/PNG - Logo UFMA colorido.png";
  * --- MOCK DATA EXPANDIDO (Nível 2) ---
  */
 
-const CURR_SEM = "2024.2";
+const CURR_SEM = "2025.2";
 const GOAL_HOURS = 345;
 
 // Notificações Mockadas (RF034-RF043)
@@ -134,7 +134,7 @@ const GROUPS = [
         userId: 5,
         name: "Lucas Farias",
         role: "Diretor",
-        joinedAt: "10/01/2024",
+        joinedAt: "10/01/2025",
       },
     ],
   },
@@ -171,7 +171,7 @@ const OPPORTUNITIES = [
     ch: 40,
     vacancies: 30,
     filled: 12,
-    deadline: "20/12/2024",
+    deadline: "20/12/2025",
     description: "Curso introdutório sobre redes neurais.",
     author: "Prof. Dr. Anselmo Paiva",
     public: true,
@@ -186,7 +186,7 @@ const OPPORTUNITIES = [
         motivation:
           "Tenho muito interesse em aprender sobre IA e suas aplicações práticas...",
         curriculum: "cv_joao_silva.pdf",
-        appliedAt: "15/12/2024 10:30",
+        appliedAt: "15/12/2025 10:30",
       },
       {
         id: 902,
@@ -195,7 +195,7 @@ const OPPORTUNITIES = [
         periodo: "6º",
         matricula: "2021009988",
         status: "Aprovado",
-        approvedAt: "16/12/2024 14:00",
+        approvedAt: "16/12/2025 14:00",
         approvedBy: "Prof. Anselmo Paiva",
       },
       {
@@ -206,7 +206,7 @@ const OPPORTUNITIES = [
         matricula: "2023005544",
         status: "Pendente",
         motivation: "Quero desenvolver minhas habilidades em programação...",
-        appliedAt: "15/12/2024 16:45",
+        appliedAt: "15/12/2025 16:45",
       },
       {
         id: 904,
@@ -216,19 +216,19 @@ const OPPORTUNITIES = [
         matricula: "2020003366",
         status: "Rejeitado",
         rejectedReason: "Perfil não atende aos requisitos da vaga",
-        rejectedAt: "16/12/2024 11:20",
+        rejectedAt: "16/12/2025 11:20",
       },
     ],
   },
   {
     id: 102,
-    title: "Maratona de Programação 2024",
+    title: "Maratona de Programação 2025",
     type: "Evento",
     status: "Em Execução",
     ch: 20,
     vacancies: 100,
     filled: 85,
-    deadline: "10/12/2024",
+    deadline: "10/12/2025",
     description: "Competição de programação.",
     author: "DACOMP",
     public: true,
@@ -242,7 +242,7 @@ const OPPORTUNITIES = [
     ch: 15,
     vacancies: 20,
     filled: 20,
-    deadline: "01/11/2024",
+    deadline: "01/11/2025",
     author: "Prof. Dr. Anselmo Paiva",
     public: false,
     candidates: [],
@@ -268,13 +268,13 @@ const OPPORTUNITIES = [
     ch: 30,
     vacancies: 50,
     filled: 45,
-    deadline: "20/12/2024",
+    deadline: "20/12/2025",
     description:
       "Maratona de programação para soluções cívicas. Pré-requisito: Noções de Git e API.",
     author: "Prof. Dr. Darlan Quintanilha",
     public: true,
     candidates: [],
-    period: { start: "22/12/2024", end: "24/12/2024" },
+    period: { start: "22/12/2025", end: "24/12/2025" },
   },
   {
     id: 106,
@@ -284,12 +284,12 @@ const OPPORTUNITIES = [
     ch: 4,
     vacancies: 20,
     filled: 5,
-    deadline: "25/12/2024",
+    deadline: "25/12/2025",
     description: "Aprenda a montar um CV atrativo para vagas internacionais.",
     author: "DACOMP",
     public: false,
     candidates: [],
-    period: { start: "26/12/2024", end: "26/12/2024" },
+    period: { start: "26/12/2025", end: "26/12/2025" },
   },
   {
     id: 107,
@@ -299,12 +299,12 @@ const OPPORTUNITIES = [
     ch: 120,
     vacancies: 10,
     filled: 10,
-    deadline: "10/11/2024",
+    deadline: "10/11/2025",
     description: "Levando letramento digital para comunidades do interior.",
     author: "Prof. Dr. Anselmo Paiva",
     public: true,
     candidates: [],
-    period: { start: "15/11/2024", end: "15/05/2025" },
+    period: { start: "15/11/2025", end: "15/05/2025" },
   },
   {
     id: 108,
@@ -338,7 +338,7 @@ const OPPORTUNITIES = [
     responsibleDocent: 1, // Anselmo
     docentName: "Prof. Dr. Anselmo Paiva",
     period: { start: "10/02/2025", end: "15/02/2025" },
-    submitDate: "12/12/2024",
+    submitDate: "12/12/2025",
   },
 ];
 
@@ -351,35 +351,35 @@ const AVAILABLE_DOCENTS = [
 
 const CERTIFICATES = [
   {
-    id: "CERT-2024-88A9",
+    id: "CERT-2025-88A9",
     student: "Talyson Renan",
     activity: "Introdução à Robótica",
     ch: 40,
-    date: "20/10/2024",
+    date: "20/10/2025",
     hash: "88a9f00d-fake-hash",
   },
   {
-    id: "CERT-2024-B2C1",
+    id: "CERT-2025-B2C1",
     student: "Lucas Farias",
     activity: "Organização SEMCOMP",
     ch: 60,
-    date: "15/09/2024",
+    date: "15/09/2025",
     hash: "b2c1d33e-fake-hash",
-    qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2024-B2C1`,
+    qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2025-B2C1`,
   },
   {
-    id: "CERT-2024-B7F2",
+    id: "CERT-2025-B7F2",
     student: "Talyson Renan",
     matricula: "2021003456",
     activity: "Curso de Python para Iniciantes",
     type: "Curso",
     ch: 60,
-    dateStart: "01/08/2024",
-    dateEnd: "30/08/2024",
-    dateIssued: "05/09/2024",
+    dateStart: "01/08/2025",
+    dateEnd: "30/08/2025",
+    dateIssued: "05/09/2025",
     responsible: "Prof. Dr. Carlos Silva",
     hash: "b7f2d44e-fake-hash-verificacao",
-    qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2024-B7F2`,
+    qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2025-B7F2`,
   },
 ];
 
@@ -392,7 +392,7 @@ const REQUESTS = [
     type: "Externo",
     activity: "Curso Udemy - React Avançado",
     ch_requested: 20,
-    date: "12/12/2024",
+    date: "12/12/2025",
     status: "Pendente",
     document: "cert_udemy.pdf",
     description: "Curso de 20h sobre hooks e context API.",
@@ -400,7 +400,7 @@ const REQUESTS = [
     daysRemaining: 2,
     documentPreview: "https://via.placeholder.com/50",
     timeline: [
-      { event: "Enviado", date: "12/12/2024 14:30", user: "Talyson Renan" },
+      { event: "Enviado", date: "12/12/2025 14:30", user: "Talyson Renan" },
     ],
   },
   {
@@ -411,7 +411,7 @@ const REQUESTS = [
     type: "Externo",
     activity: "Bootcamp Rocketseat",
     ch_requested: 40,
-    date: "10/12/2024",
+    date: "10/12/2025",
     status: "Aprovado",
     document: "cert_rocket.pdf",
     description: "Bootcamp intensivo.",
@@ -427,16 +427,16 @@ const REQUESTS = [
     type: "Externo",
     activity: "Palestra Tech",
     ch_requested: 5,
-    date: "08/12/2024",
+    date: "08/12/2025",
     status: "Indeferido",
     reason: "Documento ilegível",
     priority: "normal",
     daysRemaining: 0,
     timeline: [
-      { event: "Enviado", date: "08/12/2024 10:00", user: "João Souza" },
+      { event: "Enviado", date: "08/12/2025 10:00", user: "João Souza" },
       {
         event: "Indeferido",
-        date: "09/12/2024 15:30",
+        date: "09/12/2025 15:30",
         user: "Prof. Alexandre Cesar",
       },
     ],
@@ -449,12 +449,12 @@ const REQUESTS = [
     activity: "Curso de React Avançado (Udemy)",
     type: "Curso",
     ch_requested: 20,
-    date: "12/12/2024",
+    date: "12/12/2025",
     status: "Pendente",
     priority: "critical",
     daysRemaining: 1,
     timeline: [
-      { event: "Enviado", date: "12/12/2024 14:30", user: "Talyson Renan" },
+      { event: "Enviado", date: "12/12/2025 14:30", user: "Talyson Renan" },
     ],
   },
   {
@@ -465,7 +465,7 @@ const REQUESTS = [
     activity: "Monitoria de Algoritmos",
     type: "Projeto",
     ch_requested: 60,
-    date: "10/10/2024",
+    date: "10/10/2025",
     status: "Aprovado",
     priority: "normal",
     daysRemaining: 0,
@@ -479,7 +479,7 @@ const REQUESTS = [
     activity: "Workshop de Design Thinking",
     type: "Oficina",
     ch_requested: 4,
-    date: "05/12/2024",
+    date: "05/12/2025",
     status: "Indeferido",
     reason: "Documento ilegível.",
     priority: "normal",
@@ -494,13 +494,13 @@ const REQUESTS = [
     type: "Externo",
     activity: "Estágio Supervisionado",
     ch_requested: 100,
-    date: "01/12/2024",
+    date: "01/12/2025",
     status: "Pendente",
     priority: "normal",
     daysRemaining: 5,
     description: "Estágio de férias na empresa TechSoft.",
     timeline: [
-      { event: "Enviado", date: "01/12/2024 09:00", user: "Ana Beatriz" },
+      { event: "Enviado", date: "01/12/2025 09:00", user: "Ana Beatriz" },
     ],
   },
   {
@@ -511,13 +511,13 @@ const REQUESTS = [
     type: "Externo",
     activity: "Curso de Inglês Técnico",
     ch_requested: 30,
-    date: "30/11/2024",
+    date: "30/11/2025",
     status: "Pendente",
     priority: "normal",
     daysRemaining: 8,
     description: "Curso de inglês focado em TI.",
     timeline: [
-      { event: "Enviado", date: "30/11/2024 14:00", user: "Pedro Henrique" },
+      { event: "Enviado", date: "30/11/2025 14:00", user: "Pedro Henrique" },
     ],
   },
 ];
@@ -536,7 +536,7 @@ const COMPLETED_STUDENTS = [
     ingresso: "2020.1",
     ppc: "2020",
     totalHours: 345,
-    completedAt: "15/11/2024",
+    completedAt: "15/11/2025",
     status: "Apto",
     launched: false,
     activities: [
@@ -544,14 +544,14 @@ const COMPLETED_STUDENTS = [
         name: "Robótica Educacional",
         type: "Interna",
         ch: 40,
-        date: "20/10/2024",
+        date: "20/10/2025",
         validator: "Prof. Alexandre",
       },
       {
         name: "Curso Python Udemy",
         type: "Externa",
         ch: 60,
-        date: "15/09/2024",
+        date: "15/09/2025",
         validator: "Prof. Alexandre",
       },
     ],
@@ -563,7 +563,7 @@ const COMPLETED_STUDENTS = [
     ingresso: "2020.1",
     ppc: "2020",
     totalHours: 350,
-    completedAt: "10/11/2024",
+    completedAt: "10/11/2025",
     status: "Apto",
     launched: false,
     activities: [],
@@ -576,7 +576,7 @@ const COMPLETED_STUDENTS = [
     ingresso: "2020.1",
     ppc: "2020",
     totalHours: 345 + i,
-    completedAt: "01/12/2024",
+    completedAt: "01/12/2025",
     status: "Apto",
     launched: false,
     activities: [],
@@ -1990,7 +1990,7 @@ const CertificationModal = ({ opportunity, user, onClose }) => {
       const participant = participants.find((p) => p.id === id);
       const hash = Math.random().toString(36).substring(7);
       const newCert = {
-        id: `CERT-2024-${hash}`,
+        id: `CERT-2025-${hash}`,
         student: participant.name,
         matricula: participant.matricula,
         activity: opportunity.title,
@@ -2001,7 +2001,7 @@ const CertificationModal = ({ opportunity, user, onClose }) => {
         dateIssued: new Date().toLocaleDateString("pt-BR"),
         responsible: user.name,
         hash: `${hash}-fake-verificacao`,
-        qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2024-${hash}`,
+        qrCode: `${import.meta.env.VITE_API_BASE_URL}/verify/CERT-2025-${hash}`,
       };
       CERTIFICATES.push(newCert);
       // Update participant status?
@@ -2239,6 +2239,7 @@ const CertificationModal = ({ opportunity, user, onClose }) => {
 const LandingPage = ({ onLogin, onRegister }) => {
   const [certCode, setCertCode] = useState("");
   const [validationResult, setValidationResult] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleValidation = (e) => {
     e.preventDefault();
@@ -2333,7 +2334,66 @@ const LandingPage = ({ onLogin, onRegister }) => {
               aria-hidden="true"
             />
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-white hover:bg-blue-800 rounded"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-gov-blue-dark border-t border-blue-800">
+            <div className="flex flex-col p-4 gap-2">
+              <button
+                onClick={() => {
+                  document
+                    .getElementById("mural")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-white py-3 px-4 rounded hover:bg-blue-800 font-semibold"
+              >
+                Oportunidades
+              </button>
+              <button
+                onClick={() => {
+                  document
+                    .getElementById("validar")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-white py-3 px-4 rounded hover:bg-blue-800 font-semibold"
+              >
+                Validar Certificado
+              </button>
+              <button
+                onClick={() => {
+                  document
+                    .getElementById("faq")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-white py-3 px-4 rounded hover:bg-blue-800 font-semibold"
+              >
+                Perguntas Frequentes
+              </button>
+              <hr className="border-blue-700 my-2" />
+              <button
+                onClick={() => {
+                  onLogin();
+                  setMobileMenuOpen(false);
+                }}
+                className="bg-white text-gov-blue py-3 px-4 rounded-full font-bold text-center hover:bg-gray-100"
+              >
+                Acesso Restrito
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -2445,7 +2505,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
                 type="text"
                 value={certCode}
                 onChange={(e) => setCertCode(e.target.value)}
-                placeholder="Ex: CERT-2024-88A9"
+                placeholder="Ex: CERT-2025-88A9"
                 className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none uppercase"
               />
               <Button variant="secondary">Verificar</Button>
@@ -2563,7 +2623,7 @@ const LandingPage = ({ onLogin, onRegister }) => {
           </div>
         </div>
         <div className="text-center mt-12 pt-8 border-t border-gray-800">
-          © 2024 UFMA - Ciência da Computação. Todos os direitos reservados.
+          © 2025 UFMA - Ciência da Computação. Todos os direitos reservados.
         </div>
       </footer>
     </div>
@@ -3650,7 +3710,7 @@ const App = () => {
                       <p className="text-sm font-bold text-gray-900">
                         Analisado em
                       </p>
-                      <p className="text-sm text-gray-500">15/12/2024</p>
+                      <p className="text-sm text-gray-500">15/12/2025</p>
                       <Button variant="ghost" className="mt-2" size="sm">
                         Ver Parecer
                       </Button>
@@ -3804,7 +3864,7 @@ const App = () => {
           <div className="p-4 border-b bg-gray-50 flex justify-between">
             <div className="flex gap-4">
               <select className="border rounded p-1 text-sm">
-                <option>Semestre 2024.2</option>
+                <option>Semestre 2025.2</option>
               </select>
               <select className="border rounded p-1 text-sm">
                 <option>PPC 2022</option>
@@ -4808,7 +4868,7 @@ const App = () => {
                   Mural de Avisos da Coordenação
                 </h3>
                 <div className="bg-blue-50 p-4 rounded text-sm text-blue-900 mb-4">
-                  <p className="font-bold mb-1">Prazo de Submissão 2024.2</p>
+                  <p className="font-bold mb-1">Prazo de Submissão 2025.2</p>
                   <p>Iniciativas devem ser submetidas até 15/02.</p>
                 </div>
               </Card>
@@ -4831,7 +4891,7 @@ const App = () => {
               <p className="text-gray-600 mb-6">
                 A iniciativa <strong>{feedbackModal.title}</strong> foi enviada
                 para análise de <strong>{feedbackModal.docentName}</strong> em{" "}
-                {feedbackModal.submitDate || "12/12/2024"}.
+                {feedbackModal.submitDate || "12/12/2025"}.
               </p>
               <div className="bg-gray-50 p-4 rounded text-sm text-left mb-6">
                 <p>
@@ -5112,7 +5172,7 @@ const App = () => {
                         userId: 5,
                         name: "Lucas Farias",
                         role: "Diretor",
-                        joinedAt: "17/12/2024",
+                        joinedAt: "17/12/2025",
                       },
                     ],
                   });
